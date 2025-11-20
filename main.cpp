@@ -1,10 +1,11 @@
 #include "header.hpp"
+#include "GameObject.hpp"
 // directions for sprite
 enum directions {down,left,right,up};
 int main()
 {
-	unsigned int width = 1920;
-	unsigned int height = 1080;
+	unsigned int width = 320;
+	unsigned int height = 240;
 	sf::RenderWindow* window= new sf::RenderWindow(sf::VideoMode({ width,height }), "Test");
 	window->setFramerateLimit(60);
 
@@ -27,7 +28,7 @@ int main()
 	}
 	sprite.setTextureRect(dir[down]);
 	sprite.setOrigin({ 8,8 });
-	sprite.setPosition({ 500,700});
+	sprite.setPosition({ 160,120});
 	while (window->isOpen())
 	{
 		while (const std::optional event = window->pollEvent())
@@ -42,28 +43,27 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
 		{
-			sprite.move({ 0,0.1});
+			sprite.move({ 0,1});
 			sprite.setTextureRect(dir[down]);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
 		{
-			sprite.move({ -0.1,0 });
+			sprite.move({ -1,0 });
 			sprite.setTextureRect(dir[left]);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
 		{
-			sprite.move({ 0.1,0 });
+			sprite.move({ 1,0 });
 			sprite.setTextureRect(dir[right]);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W))
 		{
-			sprite.move({ 0,-0.1 });
+			sprite.move({ 0,-1 });
 			sprite.setTextureRect(dir[up]);
 		}
 
 		// draw below this
 		window->clear(sf::Color::White);
-
 		window->draw(sprite);
 
 		window->display();
