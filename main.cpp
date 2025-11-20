@@ -9,7 +9,7 @@ int main()
 	unsigned int height = 240;
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode({ width,height }), "Test");
 	window->setFramerateLimit(60);
-	sf::Vector2i pos;
+	sf::Vector2f pos;
 	sf::Texture texture;
 	float angle;
 	if (!texture.loadFromFile("Sprites/ExampleSprite.png"))
@@ -22,13 +22,13 @@ int main()
 	// setting sprite up.
 	sf::Texture texture2;
 
-	if (!texture2.loadFromFile("Sprites/ExampleSprite.png"))
+	if (!texture2.loadFromFile("Sprites/ExampleSpriteWall.png"))
 	{
 		std::cout << "error loading sprite" << std::endl;
 	}
 	sf::Texture texture3;
 
-	if (!texture3.loadFromFile("Sprites/ExampleSprite.png"))
+	if (!texture3.loadFromFile("Sprites/ExampleBullet.png"))
 	{
 		std::cout << "error loading sprite" << std::endl;
 	}
@@ -87,14 +87,22 @@ int main()
 			sprite.move({ 0,-1 });
 			sprite.setTextureRect(dir[up]);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Space))
-		{
-			
-			pos = sf::Mouse::getPosition(*window);
-			angle = atan2(pos.y - 120, pos.x - 160);
-			proj2 = newGameguy.shootProjectile(texture, 10, { 1 * cos(angle),1 * sin(angle)}, 10);
-		}
+		pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // converts pixels(int) to world coords(float).
+		std::cout << pos.x << "," << pos.y << std::endl;
+		std::cout << pos.x - sprite.getPosition().x << "," << pos.y - sprite.getPosition().y << std::endl;
 
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{	// i got it to fucking work its this stupid map coords bs, im doing it based on pixels but sprite position is world coords.
+				// THEN it was inaccurate and i went from working with pixels to world coords transforming mouse pos(pixels(int)) to world coords which is a float.
+				// I AM GOD
+				angle = atan2(pos.y - sprite.getPosition().y, pos.x - sprite.getPosition().x);
+				proj2 = newGameguy.shootProjectile(texture3, 10, { 3 * cos(angle),3 * sin(angle) }, 10, sprite.getPosition());
+			}
+		}
+		// THIS allows the camera to follow the sprite.
+		window->setView(sf::View({ sprite.getPosition().x,sprite.getPosition().y }, {static_cast<float>(width),static_cast<float>(height) }));
 		// draw below this
 		window->clear(sf::Color::White);
 		window->draw(sprite); 

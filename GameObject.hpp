@@ -20,7 +20,7 @@ public:
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
 
-	Projectile* shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime);
+	Projectile* shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition);
 private:
 	// whatever stats we need
 	int currHealth;

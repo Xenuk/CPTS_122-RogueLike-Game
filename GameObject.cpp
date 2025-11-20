@@ -65,11 +65,11 @@ void GameObject::setSprite(std::string textureFilePath)
 	}
 	this->setTexture(*texture);
 }
-Projectile* GameObject::shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime)
+Projectile* GameObject::shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition)
 {
 	Projectile* lol = new Projectile(texture, nDamage, nDirectionAndSpeed, nLifeTime);
 	lol->setOrigin({ 8,8 });
-	lol->setPosition({ 160,120 });
+	lol->setPosition(playerPosition);
 
 
 	return lol;
