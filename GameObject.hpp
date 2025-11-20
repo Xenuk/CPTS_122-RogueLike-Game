@@ -1,9 +1,9 @@
 #pragma once
 #include "header.hpp"
-class GameObject {
+#include "Projectile.hpp"
+class GameObject : public sf::Sprite{
 public:
-	GameObject();
-
+	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, double nMoveSpeed);
 	~GameObject();
 	int getCurrHealth();
 	void setCurrHealth(int newCurrHealth);
@@ -19,13 +19,14 @@ public:
 
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
+
+	Projectile* shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition);
 private:
 	// whatever stats we need
 	int currHealth;
 	int maxHealth;
 	int damage;
 	double moveSpeed;
-	sf::Sprite* sprite;
-	sf::Texture* texture;
+
 
 };

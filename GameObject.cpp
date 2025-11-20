@@ -1,9 +1,14 @@
 #include "GameObject.hpp"
 
-GameObject::GameObject()
+GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage,double nMoveSpeed) :
+Sprite(texture)
 {
-
+	currHealth = nCurrHealth;
+	maxHealth = nMaxHealth;
+	damage = nDamage;
+	moveSpeed = nMoveSpeed;
 }
+
 GameObject::~GameObject()
 {
 
@@ -49,15 +54,23 @@ void GameObject::setMoveSpeed(double newMoveSpeed)
 
 sf::Sprite* GameObject::getSprite()
 {
-	return sprite;
+	return nullptr;
 }
 void GameObject::setSprite(std::string textureFilePath)
 {
-	sf::Texture texture;
-	if (!texture.loadFromFile(textureFilePath))
+	sf::Texture* texture = new sf::Texture();
+	if (!texture->loadFromFile(textureFilePath))
 	{
 		std::cout << "Error loading from file" << std::endl;
-
 	}
-	sprite = new sf::Sprite(texture);
+	this->setTexture(*texture);
+}
+Projectile* GameObject::shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition)
+{
+	Projectile* lol = new Projectile(texture, nDamage, nDirectionAndSpeed, nLifeTime);
+	lol->setOrigin({ 8,8 });
+	lol->setPosition(playerPosition);
+
+
+	return lol;
 }
