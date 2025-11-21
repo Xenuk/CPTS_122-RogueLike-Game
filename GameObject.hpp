@@ -1,11 +1,21 @@
+/*
+File Name: GameObject.hpp
+Created: 11/21/2025
+Purpose: This is the main Game Program.
+*/
+
 #pragma once
-#include "header.hpp"
+
+#include "Header.hpp"
 #include "Projectile.hpp"
-class GameObject : public sf::Sprite{
+
+class GameObject : public sf::Sprite
+{
 public:
 	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, double nMoveSpeed);
-	~GameObject();
-	int getCurrHealth();
+	~GameObject(); // Destructor
+
+	int getCurrHealth(); 
 	void setCurrHealth(int newCurrHealth);
 
 	int getMaxHealth();
@@ -21,6 +31,7 @@ public:
 	virtual void setSprite(std::string textureFilePath);
 
 	Projectile* shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition);
+
 private:
 	// whatever stats we need
 	int currHealth;
