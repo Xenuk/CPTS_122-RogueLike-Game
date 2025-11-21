@@ -11,4 +11,5 @@ Projectile::Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDi
 	damage = nDamage;
 	directionAndSpeed = nDirectionAndSpeed;
 	lifeTime = nLifeTime;
+	currLifeTime = 0;
 }

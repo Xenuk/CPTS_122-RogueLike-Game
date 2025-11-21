@@ -3,7 +3,7 @@
 #include "Projectile.hpp"
 class GameObject : public sf::Sprite{
 public:
-	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, double nMoveSpeed);
+	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, int nProjectileCooldown, float nMoveSpeed);
 	~GameObject();
 	int getCurrHealth();
 	void setCurrHealth(int newCurrHealth);
@@ -14,19 +14,21 @@ public:
 	int getDamage();
 	void setDamage(int newDamage);
 
-	double getMoveSpeed();
-	void setMoveSpeed(double newMoveSpeed);
+	float getMoveSpeed();
+	void setMoveSpeed(float newMoveSpeed);
 
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
 
-	Projectile* shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition);
+	Projectile* shootProjectile(sf::RenderWindow* window, const sf::Texture& texture, float projectileSpeed, int nDamage, double nLifeTime);
+
+	virtual void characterMoveControls();
+	int projectileCooldown;
 private:
 	// whatever stats we need
 	int currHealth;
 	int maxHealth;
 	int damage;
-	double moveSpeed;
-
+	float moveSpeed;
 
 };
