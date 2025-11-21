@@ -1,4 +1,11 @@
-#include "GameObject.hpp"
+/*
+File Name: GameObject.cpp
+Created: 11/21/2025
+Purpose: The content file for definitions of the declarations in the main game file.
+*/
+
+#include "GameObject.hpp" 
+
 
 GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage,double nMoveSpeed) :
 Sprite(texture)
@@ -56,6 +63,7 @@ sf::Sprite* GameObject::getSprite()
 {
 	return nullptr;
 }
+
 void GameObject::setSprite(std::string textureFilePath)
 {
 	sf::Texture* texture = new sf::Texture();
@@ -65,6 +73,7 @@ void GameObject::setSprite(std::string textureFilePath)
 	}
 	this->setTexture(*texture);
 }
+
 Projectile* GameObject::shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition)
 {
 	Projectile* lol = new Projectile(texture, nDamage, nDirectionAndSpeed, nLifeTime);
