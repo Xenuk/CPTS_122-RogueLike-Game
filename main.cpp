@@ -67,26 +67,45 @@ int main()
 		{
 			cool = true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
-		{
-			sprite.move({ 0,1});
-			sprite.setTextureRect(dir[down]);
+
+
+		//movement below
+		float movementVerticle=0, movementHorizontal=0;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Down))
+		{	
+			movementVerticle = movementVerticle + 1;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)||sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
 		{
-			sprite.move({ -1,0 });
-			sprite.setTextureRect(dir[left]);
+			movementHorizontal = movementHorizontal - 1;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
 		{
-			sprite.move({ 1,0 });
-			sprite.setTextureRect(dir[right]);
+			movementHorizontal = movementHorizontal + 1;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up))
 		{
-			sprite.move({ 0,-1 });
-			sprite.setTextureRect(dir[up]);
+			movementVerticle = movementVerticle - 1;
 		}
+		if (movementVerticle != 0 && movementHorizontal!=0) {
+			//0.707106781187 ~ ((1+1)^(1/2))/2
+			movementVerticle = movementVerticle* 0.707106781187;
+			movementHorizontal = movementHorizontal* 0.707106781187;
+		}
+
+		if(movementVerticle != 0 || movementHorizontal != 0) {
+			sprite.move({ movementHorizontal,movementVerticle });
+		}
+		if (movementVerticle>0) {sprite.setTextureRect(dir[down]);}
+		else if (movementVerticle<0) {sprite.setTextureRect(dir[up]);}
+		else if (movementHorizontal > 0) { sprite.setTextureRect(dir[right]); }
+		else if (movementHorizontal < 0) { sprite.setTextureRect(dir[left]); }
+
+		movementHorizontal = 0;
+		movementVerticle = 0;
+
+
+
 		pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // converts pixels(int) to world coords(float).
 		std::cout << pos.x << "," << pos.y << std::endl;
 		std::cout << pos.x - sprite.getPosition().x << "," << pos.y - sprite.getPosition().y << std::endl;
