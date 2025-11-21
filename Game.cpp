@@ -9,11 +9,11 @@ Purpose: Fill in
 
 Game::Game()
 {
-
+std::cout << "Game constructor called.\n" << std::endl;
 }
 Game::~Game()
 {
-
+std::cout << "Game Destructor called.\n" << std::endl;
 }
 void Game::runGame()
 {
@@ -33,6 +33,7 @@ void Game::runGame()
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ 160,120 });
+	
 	while (window->isOpen())
 	{
 		while (const std::optional event = window->pollEvent())
@@ -118,7 +119,7 @@ sf::Texture Game::createTexture(std::string filepath) // possibly useless but cl
 	sf::Texture texture = sf::Texture(); // static not dynamic so possible problems in future.
 	if (!texture.loadFromFile(filepath))
 	{
-		std::cout << "error loading sprite" << std::endl;
+		std::cout << "Error loading sprite" << std::endl;
 	}
 	return texture;
 }
