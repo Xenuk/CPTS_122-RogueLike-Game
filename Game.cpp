@@ -15,7 +15,7 @@ void Game::runGame()
 
 	int projectileTime = 0; // used for cooldown
 	sf::Texture texture = createTexture("Sprites/ExampleSprite.png");
-	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png");
+	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png"); // static allocation so perhaps make it dynamic in the future if needed?
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
 	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1);
 
@@ -27,7 +27,6 @@ void Game::runGame()
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ 160,120 });
-	bool cool = false;
 	while (window->isOpen())
 	{
 		while (const std::optional event = window->pollEvent())
@@ -108,12 +107,12 @@ void Game::projectileHandling() // possibly rework and remove depending on what 
 	}
 
 }
-sf::Texture& Game::createTexture(std::string filepath) // possibly useless but cleans up the code.
+sf::Texture Game::createTexture(std::string filepath) // possibly useless but cleans up the code.
 {
-	sf::Texture* texture = new sf::Texture();
-	if (!texture->loadFromFile(filepath))
+	sf::Texture texture = sf::Texture(); // static not dynamic so possible problems in future.
+	if (!texture.loadFromFile(filepath))
 	{
 		std::cout << "error loading sprite" << std::endl;
 	}
-	return *texture;
+	return texture;
 }
