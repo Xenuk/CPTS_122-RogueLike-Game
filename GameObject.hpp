@@ -1,8 +1,18 @@
+/*
+File Name:
+Created: 11/19/2025
+Purpose: The main file that starts the program.
+*/
+
 #pragma once
-#include "header.hpp"
+#include "Header.hpp"
 #include "Projectile.hpp"
-class GameObject : public sf::Sprite{
+
+class GameObject : public sf::Sprite
+{
+
 public:
+
 	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, int nProjectileCooldown, float nMoveSpeed);
 	~GameObject();
 	int getCurrHealth();
@@ -24,7 +34,9 @@ public:
 
 	virtual void characterMoveControls();
 	int projectileCooldown;
+
 private:
+
 	// whatever stats we need
 	int currHealth;
 	int maxHealth;
