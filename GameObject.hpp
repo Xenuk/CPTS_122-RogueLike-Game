@@ -20,7 +20,7 @@ public:
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
 
-	Projectile* shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition);
+	Projectile* shootProjectile(sf::RenderWindow* window, const sf::Texture& texture, float projectileSpeed, int nDamage, double nLifeTime);
 
 	virtual void characterMoveControls();
 	int projectileCooldown;
@@ -30,4 +30,5 @@ private:
 	int maxHealth;
 	int damage;
 	float moveSpeed;
+
 };

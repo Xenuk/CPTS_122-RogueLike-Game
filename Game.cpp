@@ -13,25 +13,11 @@ void Game::runGame()
 {
 	createWindow(320, 240);
 
-	sf::Vector2f pos;
-	sf::Texture texture;
-	float angle;
 	int projectileTime = 0; // used for cooldown
-	if (!texture.loadFromFile("Sprites/ExampleSprite.png"))
-	{
-		std::cout << "error loading sprite" << std::endl;
-	}
-	sf::Texture texture2;
-	if (!texture2.loadFromFile("Sprites/ExampleSpriteWall.png"))
-	{
-		std::cout << "error loading sprite" << std::endl;
-	}
-	sf::Texture texture3;
+	sf::Texture texture = createTexture("Sprites/ExampleSprite.png");
+	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png");
+	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
 	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1);
-	if (!texture3.loadFromFile("Sprites/ExampleBullet.png"))
-	{
-		std::cout << "error loading sprite" << std::endl;
-	}
 
 	GameObject* newWallGuy = new GameObject(texture2, 10, 10, 10, 0,0);
 	newGameguy->setOrigin({ 8,8 });
@@ -55,9 +41,6 @@ void Game::runGame()
 
 		newGameguy->characterMoveControls();
 
-		pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // converts pixels(int) to world coords(float).
-		std::cout << pos.x << "," << pos.y << std::endl;
-		std::cout << pos.x - newGameguy->getPosition().x << "," << pos.y - newGameguy->getPosition().y << std::endl;
 
 		if (window->hasFocus())
 		{
@@ -67,8 +50,7 @@ void Game::runGame()
 				if (newGameguy->projectileCooldown <= projectileTime) // rework cooldown system.
 				{
 					// calculates based on world coords not pixels for accuracy.
-					angle = atan2(pos.y - newGameguy->getPosition().y, pos.x - newGameguy->getPosition().x);
-					proj2 = newGameguy->shootProjectile(texture3, 10, { 2 * cos(angle),2 * sin(angle) }, 60, newGameguy->getPosition());
+					proj2 = newGameguy->shootProjectile(window,texture3,2,10,40);
 					projectiles.push_back(proj2);
 					projectileTime = 0;
 				}
@@ -76,20 +58,7 @@ void Game::runGame()
 		}
 		projectileTime++; // for cooldown system, rework later.
 
-		// deletes based on life time which is range, which is set to a int based on framerate, 60 frame per sec.
-		for (int i = 0; i < projectiles.size(); i++) 
-		{
-			projectiles[i]->currLifeTime++;
-			if (projectiles[i]->currLifeTime >= projectiles[i]->lifeTime)
-			{
-				projectiles.erase(projectiles.begin() + i);
-			}
-		}
-		// moves projectiles.
-		for (int i = 0; i < projectiles.size(); i++) 
-		{
-			projectiles[i]->move(projectiles[i]->directionAndSpeed);
-		}
+		projectileHandling();
 		drawToScreen();
 
 	}
@@ -120,4 +89,31 @@ void Game::drawToScreen()
 	}
 	window->display();
 	// draw above this function
+}
+void Game::projectileHandling() // possibly rework and remove depending on what would be better
+{
+	// deletes based on life time which is range, which is set to a int based on framerate, 60 frame per sec.
+	for (int i = 0; i < projectiles.size(); i++)
+	{
+		projectiles[i]->currLifeTime++;
+		if (projectiles[i]->currLifeTime >= projectiles[i]->lifeTime)
+		{
+			projectiles.erase(projectiles.begin() + i);
+		}
+	}
+	// moves projectiles.
+	for (int i = 0; i < projectiles.size(); i++)
+	{
+		projectiles[i]->move(projectiles[i]->directionAndSpeed);
+	}
+
+}
+sf::Texture& Game::createTexture(std::string filepath) // possibly useless but cleans up the code.
+{
+	sf::Texture* texture = new sf::Texture();
+	if (!texture->loadFromFile(filepath))
+	{
+		std::cout << "error loading sprite" << std::endl;
+	}
+	return *texture;
 }

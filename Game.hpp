@@ -10,8 +10,8 @@ public:
 	void runGame();
 	void createWindow(unsigned int nWidth, unsigned int nHeight);
 	void drawToScreen();
-	
-
+	void projectileHandling();
+	sf::Texture& createTexture(std::string filepath);
 
 private:
 	unsigned int width;

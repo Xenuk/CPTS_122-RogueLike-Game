@@ -66,12 +66,17 @@ void GameObject::setSprite(std::string textureFilePath)
 	}
 	this->setTexture(*texture);
 }
-Projectile* GameObject::shootProjectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime, sf::Vector2f playerPosition)
+Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed, int nDamage, double nLifeTime)
 {
-	Projectile* lol = new Projectile(texture, nDamage, nDirectionAndSpeed, nLifeTime);
+	sf::Vector2f pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+	float angle = atan2(pos.y - getPosition().y, pos.x - getPosition().x);
+	
+	Projectile* lol = new Projectile(texture, nDamage, { projectileSpeed * cos(angle),projectileSpeed * sin(angle) }, nLifeTime);
 	lol->setOrigin({ 8,8 });
-	lol->setPosition(playerPosition);
+	lol->setPosition({ getPosition() });
 
+	std::cout << pos.x << "," << pos.y << std::endl;
+	std::cout << pos.x - getPosition().x << "," << pos.y - getPosition().y << std::endl;
 
 	return lol;
 }
@@ -105,12 +110,12 @@ void GameObject::characterMoveControls()
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
 	{
 		this->move({ moveSpeed / 2,-moveSpeed / 2 });
-		this->setTextureRect(dir[0]);
+		this->setTextureRect(dir[3]);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
 	{
 		this->move({ -moveSpeed / 2,-moveSpeed / 2 });
-		this->setTextureRect(dir[0]);
+		this->setTextureRect(dir[3]);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
 	{
@@ -138,3 +143,4 @@ void GameObject::characterMoveControls()
 		this->setTextureRect(dir[3]);
 	}
 }
+
