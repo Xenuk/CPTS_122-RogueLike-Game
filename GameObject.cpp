@@ -97,50 +97,39 @@ void GameObject::characterMoveControls()
 		spriteInitalized = true;
 	}
 	this->setTextureRect(dir[0]); // 0 down, 1 left, 2 right , 4 up. changes based on sprite sheet.
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) 
+	//movement below
+	float movementVerticle = 0, movementHorizontal = 0;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Down))
 	{
-		this->move({ -moveSpeed / 2,moveSpeed / 2 });
-		this->setTextureRect(dir[0]);
+		movementVerticle = movementVerticle + moveSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A) ||  sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
 	{
-		this->move({ moveSpeed / 2,moveSpeed / 2 });
-		this->setTextureRect(dir[0]);
+		movementHorizontal = movementHorizontal - moveSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
 	{
-		this->move({ moveSpeed / 2,-moveSpeed / 2 });
-		this->setTextureRect(dir[3]);
+		movementHorizontal = movementHorizontal + moveSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up))
 	{
-		this->move({ -moveSpeed / 2,-moveSpeed / 2 });
-		this->setTextureRect(dir[3]);
+		movementVerticle = movementVerticle - moveSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
-	{
-		this->move({ 0,moveSpeed });
-		this->setTextureRect(dir[0]);
+	if (movementVerticle != 0 && movementHorizontal != 0) {
+		//0.707106781187 ~ ((1+1)^(1/2))/2
+		movementVerticle = movementVerticle * 0.707106781187;
+		movementHorizontal = movementHorizontal * 0.707106781187;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
-	{
-		this->move({ -moveSpeed/2,moveSpeed/2 });
-		this->setTextureRect(dir[0]);
+
+	if (movementVerticle != 0 || movementHorizontal != 0) {
+		move({ movementHorizontal,movementVerticle });
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A))
-	{
-		this->move({ -moveSpeed,0 });
-		this->setTextureRect(dir[1]);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D))
-	{
-		this->move({ moveSpeed,0 });
-		this->setTextureRect(dir[2]);
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W))
-	{
-		this->move({ 0,-moveSpeed });
-		this->setTextureRect(dir[3]);
-	}
+	if (movementVerticle > 0) { setTextureRect(dir[0]); }
+	else if (movementVerticle < 0) { setTextureRect(dir[3]); }
+	else if (movementHorizontal > 0) { setTextureRect(dir[2]); }
+	else if (movementHorizontal < 0) { setTextureRect(dir[1]); }
+
+	movementHorizontal = 0;
+	movementVerticle = 0;
 }
 
