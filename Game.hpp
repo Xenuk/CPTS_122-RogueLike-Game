@@ -5,7 +5,7 @@ Purpose: Fill This In
 */
 
 #pragma once
-#include "header.hpp"
+#include "Header.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp"
 
