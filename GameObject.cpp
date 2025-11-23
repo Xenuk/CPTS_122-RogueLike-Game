@@ -43,7 +43,7 @@ void GameObject::setCurrHealth(int newCurrHealth)
 
 int GameObject::getMaxHealth()
 {
-	std::cout << "Get Max Health: " << newCurrHealth << std::endl;
+	std::cout << "Get Max Health: " << maxHealth << std::endl;
 	return maxHealth;
 }
 void GameObject::setMaxHealth(int newMaxHealth)
