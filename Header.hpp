@@ -21,6 +21,8 @@ Purpose: Include this Header for Libraries
 #include <cassert> // Assert, used for error handling. Evals if expression is false, prints.
 #include <cmath> // Trig, Power, Expo, Rounding, etc.
 
+extern sf::Clock globalClock; // global clock
+
 using std::cout;
 using std::cin;
 using std::endl;
