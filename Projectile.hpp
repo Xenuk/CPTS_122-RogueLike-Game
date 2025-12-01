@@ -7,16 +7,29 @@ Purpose: Fill in
 #pragma once
 #include "Header.hpp"
 
-
 class Projectile : public sf::Sprite 
 {
-
 public:
+    // Projectile();
+    Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed,
+        double nLifeTime);
+    ~Projectile();
 
-	Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime); // nDirectionAndSpeed later will be used from mouse position calculated somehow or smth.
-	~Projectile();
-	sf::Vector2f directionAndSpeed;
-	int damage;
-	double lifeTime;
-	double currLifeTime;
+    // Getters
+    sf::Vector2f getDirectionAndSpeed() const;
+    int getDamage() const;
+    double getLifeTime() const;
+    double getCurrLifeTime() const;
+
+    // Setters
+    void setDirectionAndSpeed(const sf::Vector2f& nDirectionAndSpeed);
+    void setDamage(int nDamage);
+    void setLifeTime(double nLifeTime);
+    void setCurrLifeTime(double nCurrLifeTime);
+
+private:
+    sf::Vector2f directionAndSpeed;
+    int damage;
+    double lifeTime;
+    double currLifeTime;
 };
