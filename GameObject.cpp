@@ -91,7 +91,7 @@ void GameObject::characterMoveControls()
 		{
 			// says we read from sheet from starting at 0,0 then moving 16 to the right and the second bracket
 			// is the size of the sprite total.
-			dir[i] = sf::IntRect({ {16 * i, 0},{16,16} });
+			dir[i] = sf::IntRect({ {0, 16 * i},{16,16} });
 			
 		}
 		spriteInitalized = true;
@@ -126,8 +126,8 @@ void GameObject::characterMoveControls()
 	}
 	if (movementVerticle > 0) { setTextureRect(dir[0]); }
 	else if (movementVerticle < 0) { setTextureRect(dir[3]); }
-	else if (movementHorizontal > 0) { setTextureRect(dir[2]); }
-	else if (movementHorizontal < 0) { setTextureRect(dir[1]); }
+	else if (movementHorizontal > 0) { setTextureRect(dir[1]); }
+	else if (movementHorizontal < 0) { setTextureRect(dir[2]); }
 
 	movementHorizontal = 0;
 	movementVerticle = 0;

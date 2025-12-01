@@ -5,7 +5,7 @@
 int main()
 {
 	Game game = Game();
-	game.runGame();
+	game.mainMenu();
 
 	return 0;
 }

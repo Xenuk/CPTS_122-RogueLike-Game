@@ -12,6 +12,8 @@ public:
 	void drawToScreen();
 	void projectileHandling();
 	sf::Texture createTexture(std::string filepath);
+	void mainMenu();
+	void escapeMenu();
 
 private:
 	unsigned int width;
