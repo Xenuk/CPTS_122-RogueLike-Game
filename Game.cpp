@@ -1,35 +1,193 @@
-/*
-File Name: Game.cpp
-Created: 11/21/2025
-Purpose: Fill in
-*/
-
 #include "Game.hpp"
+void Game::escapeMenu() // do relative camera menu.
+{
+	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite playButton(playButtonTexture);
+	playButton.setOrigin({ 47,10 });
+	playButton.setPosition({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y -50 });
+	playButton.setScale({ 1,1 });
+
+	sf::Texture settingsButtonTexture = createTexture("Sprites/SettingsButton.png");
+	sf::Sprite settingsButton(settingsButtonTexture);
+	settingsButton.setOrigin({ 47,10});
+	settingsButton.setPosition({ gameObjects[1]->getPosition().x, gameObjects[1]->getPosition().y }); // gets relative position.
+	settingsButton.setScale({ 1,1 });
+	
+	sf::Texture exitButtonTexture = createTexture("Sprites/ExitButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y + 50 });
+	exitButton.setScale({ 1,1 });
+	bool loop = true;
+	int input = 0;
+	while (loop)
+	{
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (playButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+				else if (settingsButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 2;
+				}
+				else if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 3;
+				}
+			}
 
 
+		}
+		switch (input)
+		{
+		case 1: // resume
+			loop = false;
+
+			break;
+		case 2: // settings
+	
+			break;
+		case 3: // exit
+			loop = false; // exit the gameloop somehow
+			break;
+		}
+
+		window->draw(playButton);
+		window->draw(settingsButton);
+		window->draw(exitButton);
+		window->display();
+	}
+}
+void Game::mainMenu()
+{
+	createWindow(320, 180); // creates 1920x1080 window with a view that is 320 by 180.
+
+
+	sf::Texture backGroundTexture = createTexture("Sprites/SpriteMap.png");
+	sf::Sprite backGround(backGroundTexture);
+	backGround.setOrigin({ 500,450 });
+	backGround.setPosition({ 960,540 });
+	backGround.setScale({ 6,6 });
+
+	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite playButton(playButtonTexture);
+	playButton.setOrigin({ 47,10 });
+	playButton.setPosition({ 960,200 });
+	playButton.setScale({ 5,5 });
+
+	sf::Texture shopButtonTexture = createTexture("Sprites/ShopButton.png");
+	sf::Sprite shopButton(shopButtonTexture);
+	shopButton.setOrigin({ 47,10 });
+	shopButton.setPosition({ 960,400 });
+	shopButton.setScale({ 5,5 });
+
+	sf::Texture settingsButtonTexture = createTexture("Sprites/SettingsButton.png");
+	sf::Sprite settingsButton(settingsButtonTexture);
+	settingsButton.setOrigin({ 47,10 });
+	settingsButton.setPosition({ 960,600 });
+	settingsButton.setScale({ 5,5 });
+
+	sf::Texture exitButtonTexture = createTexture("Sprites/ExitButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ 960,800 });
+	exitButton.setScale({ 5,5 });
+
+	// variables
+	int input = 0;
+	bool exit = false;
+
+	while (window->isOpen() && !exit)
+	{
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (playButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+				else if (shopButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 2;
+				}
+				else if (settingsButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 3;
+				}
+				else if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 4;
+				}
+			}
+			
+
+		}
+		switch (input)
+		{
+		case 1: // stages
+			playButton.setScale({ 1,1 });
+			runGame();
+
+
+			break;
+		case 2: // shop
+
+			break;
+		case 3: // settings
+
+			break;
+		case 4: // exit
+			exit = true;
+			break;
+		}
+		input = 0;
+		window->clear(sf::Color::Black);
+		window->draw(backGround);
+		window->draw(playButton);
+		window->draw(shopButton);
+		window->draw(exitButton);
+		window->draw(settingsButton);
+		window->display();
+	}
+}
 Game::Game()
 {
-std::cout << "Game constructor called.\n" << std::endl;
+
 }
 Game::~Game()
 {
-std::cout << "Game Destructor called.\n" << std::endl;
+
 }
 void Game::runGame()
 {
-	createWindow(320, 240);
+	 // createWindow(320, 180);
 
 	int projectileTime = 0; // used for cooldown
-	sf::Texture texture = createTexture("Sprites/ExampleSprite.png");
+	sf::Texture map = createTexture("Sprites/SpriteMap.png");
+	sf::Texture texture = createTexture("Sprites/cat.png");
 	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png"); // static allocation so perhaps make it dynamic in the future if needed?
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
-	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1);
-
-	GameObject* newWallGuy = new GameObject(texture2, 10, 10, 10, 0,0);
+	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20, 1);
+	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0, 0);
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
+	gameObjects.push_back(newWallGuy); // the layer is based on who was DRAWN last, so look at draw function.
 	gameObjects.push_back(newGameguy); // pushes it to the back of the vector.
-	gameObjects.push_back(newWallGuy);
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ 160,120 });
@@ -44,6 +202,7 @@ void Game::runGame()
 			}
 
 		}
+
 
 		newGameguy->characterMoveControls();
 
@@ -61,6 +220,10 @@ void Game::runGame()
 					projectileTime = 0;
 				}
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+			{
+				escapeMenu(); // freezes everything because its a while loop in itself.
+			}
 		}
 		projectileTime++; // for cooldown system, rework later.
 
@@ -73,7 +236,7 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight)
 {
 	height = nHeight;
 	width = nWidth;
-	sf::RenderWindow* newWindow = new sf::RenderWindow(sf::VideoMode({ width,height }), "Game");
+	sf::RenderWindow* newWindow = new sf::RenderWindow(sf::VideoMode({ 1920,1080 }), "Game");
 	window = newWindow;
 	window->setFramerateLimit(60); // everything scales off of frames so try to figure out a way to not get that.
 
@@ -81,7 +244,7 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight)
 void Game::drawToScreen()
 {
 	// creates a camera that follows the player(gameObject 1) based on window height and width.
-	window->setView(sf::View({ gameObjects[0]->getPosition().x,gameObjects[0]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
+	window->setView(sf::View({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
 	// draw below this function
 	window->clear(sf::Color::White);
 
@@ -104,7 +267,7 @@ void Game::projectileHandling() // possibly rework and remove depending on what 
 		projectiles[i]->currLifeTime++;
 		if (projectiles[i]->currLifeTime >= projectiles[i]->lifeTime)
 		{
-			projectiles.erase(projectiles.begin() + i);
+			projectiles.erase(projectiles.begin() + i); 
 		}
 	}
 	// moves projectiles.
@@ -119,7 +282,7 @@ sf::Texture Game::createTexture(std::string filepath) // possibly useless but cl
 	sf::Texture texture = sf::Texture(); // static not dynamic so possible problems in future.
 	if (!texture.loadFromFile(filepath))
 	{
-		std::cout << "Error loading sprite" << std::endl;
+		std::cout << "error loading sprite" << std::endl;
 	}
 	return texture;
 }
