@@ -1,62 +1,86 @@
+/*
+File Name: GameObject.cpp
+Created: 11/19/2025
+Purpose: The main file that starts the program.
+*/
+
 #include "GameObject.hpp"
 
 GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown, float nMoveSpeed) :
 Sprite(texture)
 {
+	std::cout << "GameObject constructor called.\n" << std::endl;
 	currHealth = nCurrHealth;
+	std::cout << "Current Health: " << currHealth << std::endl;
 	maxHealth = nMaxHealth;
+	std::cout << "Max Health: " << maxHealth << std::endl;
 	damage = nDamage;
+	std::cout << "Current Damage: " << damage << std::endl;
 	moveSpeed = nMoveSpeed;
+	std::cout << "Current MoveSpeed: " << moveSpeed << std::endl;
 	projectileCooldown = nProjectileCooldown;
+	std::cout << "Current Attack Cooldown: " << projectileCooldown << std::endl;
+	
 }
 
 GameObject::~GameObject()
 {
-
+std::cout << "GameObject Destructor called.\n" << std::endl;
 }
 
 
 int GameObject::getCurrHealth()
 {
+	std::cout << "Get Health: " << currHealth << std::endl;
 	return currHealth;
 }
 void GameObject::setCurrHealth(int newCurrHealth)
 {
 	currHealth = newCurrHealth;
+	std::cout << "Health was Set To: " << currHealth << std::endl;
 }
 
 
 int GameObject::getMaxHealth()
 {
+	std::cout << "Get Max Health: " << maxHealth << std::endl;
 	return maxHealth;
 }
 void GameObject::setMaxHealth(int newMaxHealth)
 {
 	maxHealth = newMaxHealth;
+	std::cout << "Max Health was Set To: " << maxHealth << std::endl;
 }
 
 int GameObject::getDamage()
 {
+	std::cout << "Get Damage: " << damage << std::endl;
 	return damage;
 }
+
 void GameObject::setDamage(int newDamage)
 {
 	damage = newDamage;
+	std::cout << "Damage was Set To: " << damage << std::endl;
 }
 
 float GameObject::getMoveSpeed()
 {
+	std::cout << "Get Movement Speed: " << moveSpeed << std::endl;
 	return moveSpeed;
 }
 void GameObject::setMoveSpeed(float newMoveSpeed)
 {
 	moveSpeed = newMoveSpeed;
+	std::cout << "Move Speed was Set To: " << moveSpeed << std::endl;
 }
 
 sf::Sprite* GameObject::getSprite()
 {
+	std::cout << "Get Sprite Called." << std::endl;
 	return nullptr;
 }
+
 void GameObject::setSprite(std::string textureFilePath)
 {
 	sf::Texture* texture = new sf::Texture();
@@ -65,7 +89,10 @@ void GameObject::setSprite(std::string textureFilePath)
 		std::cout << "Error loading from file" << std::endl;
 	}
 	this->setTexture(*texture);
+
+	// std::cout << "Sprite Set To: " << texture << std::endl;
 }
+
 Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed, int nDamage, double nLifeTime)
 {
 	sf::Vector2f pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
@@ -131,5 +158,7 @@ void GameObject::characterMoveControls()
 
 	movementHorizontal = 0;
 	movementVerticle = 0;
+
+	// Potentially add std::cout << " " <<  << std::endl; 
 }
 

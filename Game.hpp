@@ -1,10 +1,20 @@
+/*
+File Name: Game.hpp
+Created: 11/21/2025
+Purpose: Fill This In
+*/
+
 #pragma once
-#include "header.hpp"
+#include "Header.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp"
-class Game {
+
+
+class Game
+{
 
 public:
+
 	Game();
 	~Game();
 	void runGame();
@@ -16,6 +26,7 @@ public:
 	void escapeMenu();
 
 private:
+
 	unsigned int width;
 	unsigned int height;
 	std::vector<GameObject*> gameObjects;
