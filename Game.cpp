@@ -20,8 +20,17 @@ void Game::escapeMenu() // do relative camera menu.
 	exitButton.setScale({ 1,1 });
 	bool loop = true;
 	int input = 0;
-	while (loop)
+	while (window->isOpen() && loop)
 	{
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+	
 		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
 		if (window->hasFocus())
 		{
@@ -56,7 +65,6 @@ void Game::escapeMenu() // do relative camera menu.
 			loop = false; // exit the gameloop somehow
 			break;
 		}
-
 		window->draw(playButton);
 		window->draw(settingsButton);
 		window->draw(exitButton);
@@ -190,7 +198,7 @@ void Game::runGame()
 	gameObjects.push_back(newGameguy); // pushes it to the back of the vector.
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
-	newWallGuy->setPosition({ 160,120 });
+	newWallGuy->setPosition({ -160,-120 });
 	
 	while (window->isOpen())
 	{
@@ -220,10 +228,12 @@ void Game::runGame()
 					projectileTime = 0;
 				}
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-			{
-				escapeMenu(); // freezes everything because its a while loop in itself.
-			}
+		
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+		{
+			escapeMenu(); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
+			// Then we can pause time with this.
 		}
 		projectileTime++; // for cooldown system, rework later.
 
@@ -250,10 +260,12 @@ void Game::drawToScreen()
 
 	for (int i = 0; i < gameObjects.size(); i++) // same as below but with game objects
 	{
+		std::cout << "drawing gameObject" << endl;
 		window->draw(*gameObjects[i]);
 	}
 	for (int i = 0; i < projectiles.size(); i++) // draws all the projectiles that were dynamically allocated
 	{
+		std::cout << "drawing projectile" << endl;
 		window->draw(*projectiles[i]);
 	}
 	window->display();
