@@ -1,5 +1,5 @@
 #include "Game.hpp"
-void Game::escapeMenu() // do relative camera menu.
+void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
 {
 	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
 	sf::Sprite playButton(playButtonTexture);
@@ -62,7 +62,8 @@ void Game::escapeMenu() // do relative camera menu.
 	
 			break;
 		case 3: // exit
-			loop = false; // exit the gameloop somehow
+			loop = false;
+			loopVariable = false;// exit the gameloop somehow
 			break;
 		}
 		window->draw(playButton);
@@ -109,9 +110,9 @@ void Game::mainMenu()
 	// variables
 	int input = 0;
 	bool exit = false;
-
 	while (window->isOpen() && !exit)
 	{
+		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 		while (const std::optional event = window->pollEvent())
 		{
@@ -148,9 +149,7 @@ void Game::mainMenu()
 		switch (input)
 		{
 		case 1: // stages
-			playButton.setScale({ 1,1 });
 			runGame();
-
 
 			break;
 		case 2: // shop
@@ -199,8 +198,8 @@ void Game::runGame()
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ -160,-120 });
-	
-	while (window->isOpen())
+	bool gameState = true;
+	while (window->isOpen() && gameState)
 	{
 		while (const std::optional event = window->pollEvent())
 		{
@@ -232,7 +231,7 @@ void Game::runGame()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 		{
-			escapeMenu(); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
+			escapeMenu(gameState); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
 			// Then we can pause time with this.
 		}
 		projectileTime++; // for cooldown system, rework later.

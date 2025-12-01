@@ -23,7 +23,7 @@ public:
 	void projectileHandling();
 	sf::Texture createTexture(std::string filepath);
 	void mainMenu();
-	void escapeMenu();
+	void escapeMenu(bool& loopVariable);
 
 private:
 
