@@ -10,8 +10,6 @@ Purpose: Fill This In
 #include "GameObject.hpp"
 #include "Projectile.hpp"
 
-extern sf::Clock globalClock; // global clock
-
 class Game
 {
 
