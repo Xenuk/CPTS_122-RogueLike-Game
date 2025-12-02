@@ -195,11 +195,13 @@ Game::~Game()
 
 void Game::runGame()
 {
-	// createWindow(320, 180);
+	const float dt = 1.0f / 60.0f;  // had to use ai for this due to it being jittery as heck.
+	float accumulator = 0.0f;		// all time calc was used with chatgpt.
+									// the time shit fixxed the bug with the vibration when paused????
 	std::vector<GameObject*> newGameObjectArr;
 	gameObjects = newGameObjectArr;
 	sf::Time elapsed1 = globalClock.getElapsedTime();
-	std::cout << "Game Running Start Time: " << elapsed1.asSeconds() << "s" << std::endl;
+	std::cout << "Game Running Start Time: " << globalClock.getElapsedTime().asSeconds() << "s" << std::endl;
 	
 	int projectileTime = 0; // used for cooldown
 	sf::Texture map = createTexture("Sprites/SpriteMap.png");
@@ -223,9 +225,14 @@ void Game::runGame()
 	newWallGuy->setPosition({ -160,-120 });
 
 	bool gameState = true;
-
+	newGameguy->characterMoveControls();
 	while (window->isOpen() && gameState)
 	{
+		float frameTime = globalClock.restart().asSeconds();
+		if (frameTime > 0.25f)
+		{
+			frameTime = 0.25f;
+		}
 		while (const std::optional event = window->pollEvent())
 		{
 			if (event->is<sf::Event::Closed>())
@@ -234,71 +241,72 @@ void Game::runGame()
 			}
 
 		}
+		accumulator += frameTime;
+		if(accumulator >= dt)
+		{ 
+			newGameguy->characterMoveControls();
+			
 
+			if (window->hasFocus())
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+				{
+					if (newGameguy->getCurrWeapon()->getAmmo() == -1 || newGameguy->getCurrWeapon()->getCurrAmmo() > 0)
+					{
+						if (newGameguy->getCurrWeapon()->getCooldown() <= projectileTime) // rework cooldown system.
+							// if (10 <= projectileTime) // rework cooldown system.
+						{
+							// calculates based on world coords not pixels for accuracy.
+							proj2 = newGameguy->shootProjectile(window, texture3, 2, 10, newGameguy->getCurrWeapon()->getLifeTime());
+							newGameguy->getCurrWeapon()->deincrementCurrAmmo();
+							std::cout << "Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
+							projectiles.push_back(proj2);
+							projectileTime = 0;
+						}
+					}
+					else
+					{
+						std::cout << "Ammo depleted" << std::endl;
+					}
+				}
 
-		newGameguy->characterMoveControls();
-
-
-		if (window->hasFocus())
-		{
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-			{	
-        if (newGameguy->getCurrWeapon()->getAmmo() == -1 || newGameguy->getCurrWeapon()->getCurrAmmo() > 0)
-        {
-          if (newGameguy->getCurrWeapon()->getCooldown() <= projectileTime) // rework cooldown system.
-          // if (10 <= projectileTime) // rework cooldown system.
-          {
-            // calculates based on world coords not pixels for accuracy.
-            proj2 = newGameguy->shootProjectile(window,texture3,2,10, newGameguy->getCurrWeapon()->getLifeTime());
-            newGameguy->getCurrWeapon()->deincrementCurrAmmo();
-            std::cout << "Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
-            projectiles.push_back(proj2);
-            projectileTime = 0;
-          }
-        }
-        else
-        {
-          std::cout << "Ammo depleted" << std::endl;
-        }
 			}
 
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-		{
-			escapeMenu(gameState); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
-			// Then we can pause time with this.
-		}
-		// Reloading
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+			{
+				escapeMenu(gameState); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
+				// Then we can pause time with this.
+			}
+			// Reloading
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
 			{
-		      // newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
-		      newGameguy->getCurrWeapon()->reload();
-		      std::cout << "Reloaded. Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
+				// newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
+				newGameguy->getCurrWeapon()->reload();
+				std::cout << "Reloaded. Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
 			}
 
-      // Weapon Switching
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+			// Weapon Switching
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
 			{
-		      newGameguy->setCurrWeapon(pistol);
-          std::cout << "Switched to pistol" << std::endl;
+				newGameguy->setCurrWeapon(pistol);
+				std::cout << "Switched to pistol" << std::endl;
 			}
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
-      {
-          newGameguy->setCurrWeapon(rifle);
-          std::cout << "Switched to rifle" << std::endl;
-      }
-      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
-      {
-          newGameguy->setCurrWeapon(sniper);
-          std::cout << "Switched to sniper" << std::endl;
-      }
-		projectileTime++; // for cooldown system, rework later.
-
-		projectileHandling();
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+			{
+				newGameguy->setCurrWeapon(rifle);
+				std::cout << "Switched to rifle" << std::endl;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+			{
+				newGameguy->setCurrWeapon(sniper);
+				std::cout << "Switched to sniper" << std::endl;
+			}
+			projectileTime++; // for cooldown system, rework later.
+			accumulator -= dt;
+			projectileHandling();
+		}
 		drawToScreen();
-
-	}
+		}
 }
 
 void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is the actual game start
@@ -309,10 +317,8 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is th
 	width = nWidth;
 	sf::RenderWindow* newWindow = new sf::RenderWindow(sf::VideoMode({ 1920,1080 }), "Game");
 	std::cout << "Window Rendered: Height = " << height << ", Width = " << width << ". " << std::endl;
-
+	// window->setFramerateLimit(60);
 	window = newWindow;
-	window->setFramerateLimit(60); // everything scales off of frames so try to figure out a way to not get that.
-	std::cout << "Frame Rate Limit = 60. " << std::endl;
 
 }
 
@@ -325,12 +331,12 @@ void Game::drawToScreen()
 
 	for (int i = 0; i < gameObjects.size(); i++) // same as below but with game objects
 	{
-		std::cout << "drawing gameObject" << endl;
+		// std::cout << "drawing gameObject" << endl;
 		window->draw(*gameObjects[i]);
 	}
 	for (int i = 0; i < projectiles.size(); i++) // draws all the projectiles that were dynamically allocated
 	{
-		std::cout << "drawing projectile" << endl;
+		// std::cout << "drawing projectile" << endl;
 		window->draw(*projectiles[i]);
 	}
 	window->display();
