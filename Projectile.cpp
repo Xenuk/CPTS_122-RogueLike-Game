@@ -8,19 +8,54 @@ Purpose: Fill In
 #include "Projectile.hpp"
 
 
-Projectile::~Projectile()
-{
-std::cout << "Projectile Destructor Called." << std::endl;
-}
-
-Projectile::Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime) : Sprite(texture)
+Projectile::Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed,
+	double nLifeTime) : Sprite(texture), directionAndSpeed(nDirectionAndSpeed), damage(nDamage), lifeTime(nLifeTime), currLifeTime(0.0)
 {
 	std::cout << "Projectile Constructor Called." << std::endl;
-	damage = nDamage;
-	directionAndSpeed = nDirectionAndSpeed;
-	lifeTime = nLifeTime;
-	currLifeTime = 0;
-
 	std::cout << "Projectile Damage: " << damage << std::endl;
-	// Add speed/lifetime/direction/life?	
+}
+
+Projectile::~Projectile()
+{
+	std::cout << "Projectile Destructor Called." << std::endl;
+}
+
+sf::Vector2f Projectile::getDirectionAndSpeed() const
+{
+	return directionAndSpeed;
+}
+
+int Projectile::getDamage() const
+{
+	return damage;
+}
+
+double Projectile::getLifeTime() const
+{
+	return lifeTime;
+}
+
+double Projectile::getCurrLifeTime() const
+{
+	return currLifeTime;
+}
+
+void Projectile::setDirectionAndSpeed(const sf::Vector2f& nDirectionAndSpeed)
+{
+	directionAndSpeed = nDirectionAndSpeed;
+}
+
+void Projectile::setDamage(int nDamage)
+{
+	damage = nDamage;
+}
+
+void Projectile::setLifeTime(double nLifeTime)
+{
+	lifeTime = nLifeTime;
+}
+
+void Projectile::setCurrLifeTime(double nCurrLifeTime)
+{
+	currLifeTime = nCurrLifeTime;
 }

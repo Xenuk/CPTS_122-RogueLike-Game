@@ -6,7 +6,8 @@ Purpose: The main file that starts the program.
 
 #include "GameObject.hpp"
 
-GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown, float nMoveSpeed) :
+GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage,
+	int nProjectileCooldown, float nMoveSpeed, Weapon *nCurrWeapon) :
 Sprite(texture)
 {
 	std::cout << "GameObject constructor called.\n" << std::endl;
@@ -91,6 +92,10 @@ void GameObject::setSprite(std::string textureFilePath)
 	this->setTexture(*texture);
 
 	// std::cout << "Sprite Set To: " << texture << std::endl;
+}
+
+void GameObject::setCurrWeapon(Weapon *newCurrWeapon) {
+	currWeapon = newCurrWeapon;
 }
 
 Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed, int nDamage, double nLifeTime)
