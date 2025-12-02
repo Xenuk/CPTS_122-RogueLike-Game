@@ -153,6 +153,7 @@
     <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="header.hpp" />
     <ClInclude Include="Projectile.hpp" />
+    <ClInclude Include="Weapon.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

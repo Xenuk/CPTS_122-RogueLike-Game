@@ -58,7 +58,7 @@ void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
 		switch (input)
 		{
 		case 1: // resume
-			
+			loop = false;
 
 			break;
 		case 2: // settings
@@ -66,7 +66,12 @@ void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
 			break;
 		case 3: // exit
 			loop = false;
-			loopVariable = false;// exit the gameloop somehow
+			loopVariable = false;
+			for (int i = 0; i > gameObjects.size(); i++)
+			{
+				delete gameObjects[i];
+
+			}// exit the gameloop somehow
 			break;
 		}
 		window->draw(playButton);
@@ -191,6 +196,8 @@ Game::~Game()
 void Game::runGame()
 {
 	// createWindow(320, 180);
+	std::vector<GameObject*> newGameObjectArr;
+	gameObjects = newGameObjectArr;
 	sf::Time elapsed1 = globalClock.getElapsedTime();
 	std::cout << "Game Running Start Time: " << elapsed1.asSeconds() << "s" << std::endl;
 	
@@ -205,12 +212,12 @@ void Game::runGame()
 	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
 	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1, pistol);
 
-	GameObject* newWallGuy = new GameObject(texture2, 10, 10, 10, 0,0, pistol);
+	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0,0, pistol);
 
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
-	gameObjects.push_back(newGameguy);
-	gameObjects.push_back(newWallGuy); // the layer is based on who was DRAWN last, so look at draw function. // pushes it to the back of the vector.
+	gameObjects.push_back(newWallGuy);
+	gameObjects.push_back(newGameguy); // the layer is based on who was DRAWN last, so look at draw function. // pushes it to the back of the vector.
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ -160,-120 });
@@ -242,7 +249,7 @@ void Game::runGame()
           // if (10 <= projectileTime) // rework cooldown system.
           {
             // calculates based on world coords not pixels for accuracy.
-            proj2 = newGameguy->shootProjectile(window,texture3,2,10,40);
+            proj2 = newGameguy->shootProjectile(window,texture3,2,10, newGameguy->getCurrWeapon()->getLifeTime());
             newGameguy->getCurrWeapon()->deincrementCurrAmmo();
             std::cout << "Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
             projectiles.push_back(proj2);
@@ -312,7 +319,7 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is th
 void Game::drawToScreen()
 {
 	// creates a camera that follows the player(gameObject 1) based on window height and width.
-	window->setView(sf::View({ gameObjects[0]->getPosition().x,gameObjects[0]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
+	window->setView(sf::View({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
 	// draw below this function
 	window->clear(sf::Color::White);
 

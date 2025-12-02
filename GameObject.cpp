@@ -103,6 +103,7 @@ void GameObject::setSprite(std::string textureFilePath)
 Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed,
 	int nDamage, double nLifeTime)
 {
+	
 	sf::Vector2f pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 	float angle = atan2(pos.y - getPosition().y, pos.x - getPosition().x);
 	
