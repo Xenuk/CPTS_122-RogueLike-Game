@@ -5,10 +5,10 @@ Purpose: Fill This In
 */
 
 #pragma once
+//#define _CRT_SECURE_NO_WARNINGS
 #include "Header.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp"
-
 
 class Game
 {
@@ -34,3 +34,4 @@ private:
 
 	sf::RenderWindow* window;
 };
+
