@@ -23,13 +23,20 @@ void Game::runGame()
 	sf::Texture texture = createTexture("Sprites/ExampleSprite.png");
 	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png"); // static allocation so perhaps make it dynamic in the future if needed?
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
+	sf::Texture texture4 = createTexture("Sprites/ExampleEnemy.png");
 	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1);
 
 	GameObject* newWallGuy = new GameObject(texture2, 10, 10, 10, 0,0);
+	GameObject* newEnemyGuy = new GameObject(texture4, 10, 10, 10, 0,0.5);
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
+
+
+	newEnemyGuy->setOrigin({ 0,0 });
+	newEnemyGuy->setPosition({ 150,150 });
 	gameObjects.push_back(newGameguy); // pushes it to the back of the vector.
 	gameObjects.push_back(newWallGuy);
+	gameObjects.push_back(newEnemyGuy);
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ 160,120 });
@@ -46,7 +53,7 @@ void Game::runGame()
 		}
 
 		newGameguy->characterMoveControls();
-
+		newEnemyGuy->enemyMoveControls(newGameguy->getPosition().x, newGameguy->getPosition().y);
 
 		if (window->hasFocus())
 		{

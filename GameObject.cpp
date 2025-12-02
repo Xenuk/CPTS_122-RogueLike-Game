@@ -43,7 +43,7 @@ void GameObject::setCurrHealth(int newCurrHealth)
 
 int GameObject::getMaxHealth()
 {
-	std::cout << "Get Max Health: " << newCurrHealth << std::endl;
+	std::cout << "Get Max Health: " << maxHealth << std::endl;
 	return maxHealth;
 }
 void GameObject::setMaxHealth(int newMaxHealth)
@@ -162,3 +162,66 @@ void GameObject::characterMoveControls()
 	// Potentially add std::cout << " " <<  << std::endl; 
 }
 
+
+void GameObject::enemyMoveControls(float playerX, float playerY)
+{
+	static bool spriteInitalized = false;
+	static sf::IntRect dir[4]; // static mean its only intialized first call and is local scope but its storage is global.
+	if (spriteInitalized == false)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			// says we read from sheet from starting at 0,0 then moving 16 to the right and the second bracket
+			// is the size of the sprite total.
+			dir[i] = sf::IntRect({ {16 * i, 0},{16,16} });
+
+		}
+		spriteInitalized = true;
+	}
+	//this->setTextureRect(dir[0]); // 0 down, 1 left, 2 right , 4 up. changes based on sprite sheet.
+	//movement below
+	//float angle = atan2(pos.y - getPosition().y, pos.x - getPosition().x);
+	//projectileSpeed * cos(angle),projectileSpeed * sin(angle
+	float characterX = getPosition().x+8;
+	float characterY = getPosition().y+8;
+	float movementVerticle = 0, movementHorizontal = 0;
+	float angle = atan2(playerY - characterY, playerX - characterX);
+	if (abs(cos(angle)*100)>abs(playerX- characterX)&& abs(sin(angle) * 100) > abs(playerY - characterY)) {
+		if (playerY > characterY)
+		{
+			movementVerticle = movementVerticle + moveSpeed;
+		}
+		if (playerX < characterX)
+		{
+			movementHorizontal = movementHorizontal - moveSpeed;
+		}
+		if (playerX > characterX)
+		{
+			movementHorizontal = movementHorizontal + moveSpeed;
+		}
+		if (playerY < characterY)
+		{
+			movementVerticle = movementVerticle - moveSpeed;
+		}
+		if (movementVerticle != 0 && movementHorizontal != 0) {
+			//0.707106781187 ~ ((1+1)^(1/2))/2
+			movementVerticle = movementVerticle * 0.707106781187;
+			movementHorizontal = movementHorizontal * 0.707106781187;
+		}
+
+		if (movementVerticle != 0 || movementHorizontal != 0) {
+			move({ movementHorizontal,movementVerticle });
+		}
+
+		//if (movementVerticle > 0) { setTextureRect(dir[0]); }
+		//else if (movementVerticle < 0) { setTextureRect(dir[3]); }
+		//else if (movementHorizontal > 0) { setTextureRect(dir[2]); }
+		//else if (movementHorizontal < 0) { setTextureRect(dir[1]); }
+		movementHorizontal = 0;
+		movementVerticle = 0;
+	}
+	
+
+
+	// Potentially add std::cout << " " <<  << std::endl; 
+}
