@@ -21,7 +21,8 @@ Sprite(texture)
 	std::cout << "Current MoveSpeed: " << moveSpeed << std::endl;
 	projectileCooldown = nProjectileCooldown;
 	std::cout << "Current Attack Cooldown: " << projectileCooldown << std::endl;
-	
+	currWeapon = nCurrWeapon;
+	std::cout << "Current Weapon: " << currWeapon->getName() << std::endl;
 }
 
 GameObject::~GameObject()
