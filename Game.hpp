@@ -5,10 +5,10 @@ Purpose: Fill This In
 */
 
 #pragma once
+//#define _CRT_SECURE_NO_WARNINGS
 #include "Header.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp"
-
 
 class Game
 {
@@ -22,6 +22,8 @@ public:
 	void drawToScreen();
 	void projectileHandling();
 	sf::Texture createTexture(std::string filepath);
+	void mainMenu();
+	void escapeMenu(bool& loopVariable);
 
 private:
 
@@ -32,3 +34,4 @@ private:
 
 	sf::RenderWindow* window;
 };
+
