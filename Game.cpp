@@ -200,13 +200,16 @@ void Game::runGame()
 	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png"); // static allocation so perhaps make it dynamic in the future if needed?
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
 
-	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20, 1);
-	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0, 0);
+	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, true);
+	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, true);
+	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
+	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1, pistol);
+
+	GameObject* newWallGuy = new GameObject(texture2, 10, 10, 10, 0,0, pistol);
 
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
-
-	gameObjects.push_back(newWallGuy); // the layer is based on who was DRAWN last, so look at draw function.
+	
 	gameObjects.push_back(newGameguy); // pushes it to the back of the vector.
 
 	Projectile* proj2 = nullptr;
@@ -233,15 +236,24 @@ void Game::runGame()
 		if (window->hasFocus())
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-			{
-
-				if (newGameguy->projectileCooldown <= projectileTime) // rework cooldown system.
-				{
-					// calculates based on world coords not pixels for accuracy.
-					proj2 = newGameguy->shootProjectile(window, texture3, 2, 10, 40);
-					projectiles.push_back(proj2);
-					projectileTime = 0;
-				}
+			{	
+        if (newGameguy->getCurrWeapon()->getAmmo() == -1 || newGameguy->getCurrWeapon()->getCurrAmmo() > 0)
+        {
+          if (newGameguy->getCurrWeapon()->getCooldown() <= projectileTime) // rework cooldown system.
+          // if (10 <= projectileTime) // rework cooldown system.
+          {
+            // calculates based on world coords not pixels for accuracy.
+            proj2 = newGameguy->shootProjectile(window,texture3,2,10,40);
+            newGameguy->getCurrWeapon()->deincrementCurrAmmo();
+            std::cout << "Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
+            projectiles.push_back(proj2);
+            projectileTime = 0;
+          }
+        }
+        else
+        {
+          std::cout << "Ammo depleted" << std::endl;
+        }
 			}
 
 		}
@@ -251,7 +263,30 @@ void Game::runGame()
 			escapeMenu(gameState); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
 			// Then we can pause time with this.
 		}
+		// Reloading
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+			{
+		      // newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
+		      newGameguy->getCurrWeapon()->reload();
+		      std::cout << "Reloaded. Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
+			}
 
+      // Weapon Switching
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+			{
+		      newGameguy->setCurrWeapon(pistol);
+          std::cout << "Switched to pistol" << std::endl;
+			}
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+      {
+          newGameguy->setCurrWeapon(rifle);
+          std::cout << "Switched to rifle" << std::endl;
+      }
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+      {
+          newGameguy->setCurrWeapon(sniper);
+          std::cout << "Switched to sniper" << std::endl;
+      }
 		projectileTime++; // for cooldown system, rework later.
 
 		projectileHandling();
@@ -295,21 +330,23 @@ void Game::drawToScreen()
 	window->display();
 	// draw above this function
 }
-void Game::projectileHandling() // possibly rework and remove depending on what would be better
+void Game::projectileHandling()
 {
-	// deletes based on life time which is range, which is set to a int based on framerate, 60 frame per sec.
-	for (int i = 0; i < projectiles.size(); i++)
+	for (int i = static_cast<int>(projectiles.size()) - 1; i >= 0; --i)
 	{
-		projectiles[i]->currLifeTime++;
-		if (projectiles[i]->currLifeTime >= projectiles[i]->lifeTime)
+		double curr = projectiles[i]->getCurrLifeTime();
+		projectiles[i]->setCurrLifeTime(curr + 1.0);
+
+		if (projectiles[i]->getCurrLifeTime() >= projectiles[i]->getLifeTime())
 		{
+			delete projectiles[i];
 			projectiles.erase(projectiles.begin() + i);
 		}
 	}
-	// moves projectiles.
-	for (int i = 0; i < projectiles.size(); i++)
+
+	for (auto *p : projectiles)
 	{
-		projectiles[i]->move(projectiles[i]->directionAndSpeed);
+		p->move(p->getDirectionAndSpeed());
 	}
 
 }

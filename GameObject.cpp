@@ -6,7 +6,8 @@ Purpose: The main file that starts the program.
 
 #include "GameObject.hpp"
 
-GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown, float nMoveSpeed) :
+GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown,
+	float nMoveSpeed, Weapon *nCurrWeapon) :
 Sprite(texture)
 {
 	std::cout << "GameObject constructor called.\n" << std::endl;
@@ -20,6 +21,8 @@ Sprite(texture)
 	std::cout << "Current MoveSpeed: " << moveSpeed << std::endl;
 	projectileCooldown = nProjectileCooldown;
 	std::cout << "Current Attack Cooldown: " << projectileCooldown << std::endl;
+	currWeapon = nCurrWeapon;
+	std::cout << "Current Weapon: " << currWeapon->getName() << std::endl;
 	
 }
 
@@ -28,6 +31,10 @@ GameObject::~GameObject()
 std::cout << "GameObject Destructor called.\n" << std::endl;
 }
 
+
+void GameObject::setCurrWeapon(Weapon *newCurrWeapon) {
+	currWeapon = newCurrWeapon;
+}
 
 int GameObject::getCurrHealth()
 {
@@ -93,7 +100,8 @@ void GameObject::setSprite(std::string textureFilePath)
 	// std::cout << "Sprite Set To: " << texture << std::endl;
 }
 
-Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed, int nDamage, double nLifeTime)
+Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed,
+	int nDamage, double nLifeTime)
 {
 	sf::Vector2f pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 	float angle = atan2(pos.y - getPosition().y, pos.x - getPosition().x);
