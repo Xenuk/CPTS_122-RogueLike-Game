@@ -193,8 +193,8 @@ void Game::runGame()
 	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0, 0);
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
-	gameObjects.push_back(newWallGuy); // the layer is based on who was DRAWN last, so look at draw function.
-	gameObjects.push_back(newGameguy); // pushes it to the back of the vector.
+	gameObjects.push_back(newGameguy);
+	gameObjects.push_back(newWallGuy); // the layer is based on who was DRAWN last, so look at draw function. // pushes it to the back of the vector.
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ -160,-120 });
@@ -253,7 +253,7 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight)
 void Game::drawToScreen()
 {
 	// creates a camera that follows the player(gameObject 1) based on window height and width.
-	window->setView(sf::View({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
+	window->setView(sf::View({ gameObjects[0]->getPosition().x,gameObjects[0]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
 	// draw below this function
 	window->clear(sf::Color::White);
 
