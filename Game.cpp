@@ -3,7 +3,7 @@
 sf::Clock globalClock; // global clock
 sf::Clock timeClock;
 
-void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
+void Game::escapeMenu(bool& loopVariable)
 {
 	timeClock.stop();
 	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
@@ -73,7 +73,7 @@ void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
 			{
 				delete gameObjects[i];
 
-			}// exit the gameloop somehow
+			}
 			break;
 		}
 		window->draw(playButton);
@@ -188,12 +188,12 @@ void Game::mainMenu()
 		window->display();
 	}
 }
-void Game::guiInterface() 
+void Game::guiInterface() // this code is so bad im so sorry.
 {
 	int secs = 60;
 	std::string minutes, seconds;
-	guiInterfaceArray.resize(4,nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
-	fontArray.resize(4,nullptr);
+	guiInterfaceArray.resize(4, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	fontArray.resize(4, nullptr);
 	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
 	{
 		secs += 60;
@@ -205,27 +205,27 @@ void Game::guiInterface()
 			fontArray[0] = createFont("Fonts/Pixeled.ttf");
 		}
 
-			sf::Text* time = new sf::Text(*fontArray[0], "N/A", 16);
-			if (9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60) <= 0)
-			{
-				minutes = std::to_string(0) + ":";
-			}
-			else
-			{
-				minutes = std::to_string(9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60)) + ":";
-			}
-			if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
-			{
-				seconds = "0" + std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
-			}
-			else
-			{
-				seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
-			}
-			time->setString(minutes + seconds);
-			time->setPosition({ gameObjects[1]->getPosition().x-10, gameObjects[1]->getPosition().y - 80 });
-			time->setScale({ 0.4,0.4 });
-			guiInterfaceArray[0] = time;
+		sf::Text* time = new sf::Text(*fontArray[0], "N/A", 16);
+		if (9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60) <= 0)
+		{
+			minutes = std::to_string(0) + ":";
+		}
+		else
+		{
+			minutes = std::to_string(9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60)) + ":";
+		}
+		if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
+		{
+			seconds = "0" + std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		else
+		{
+			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		time->setString(minutes + seconds);
+		time->setPosition({ gameObjects[1]->getPosition().x - 10, gameObjects[1]->getPosition().y - 80 });
+		time->setScale({ 0.4,0.4 });
+		guiInterfaceArray[0] = time;
 	}
 	else if (guiInterfaceArray[0] != nullptr)
 	{
@@ -240,14 +240,48 @@ void Game::guiInterface()
 		}
 		if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
 		{
-			seconds = "0"+ std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+			seconds = "0" + std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
 		}
 		else
 		{
 			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
 		}
 		guiInterfaceArray[0]->setString(minutes + seconds);
-		guiInterfaceArray[0]->setPosition({gameObjects[1]->getPosition().x-10, gameObjects[1]->getPosition().y - 80});
+		guiInterfaceArray[0]->setPosition({ gameObjects[1]->getPosition().x - 10, gameObjects[1]->getPosition().y - 80 });
+	}
+	if (guiInterfaceArray[1] == nullptr)
+	{
+		sf::Text* weaponGui = new sf::Text(*fontArray[0], "N/A", 16);
+		sf::Text* weaponAmmoGui = new sf::Text(*fontArray[0], "N/A", 16);
+		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
+		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
+		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
+		weaponGui->setPosition({ gameObjects[1]->getPosition().x + 80, gameObjects[1]->getPosition().y + 70 });
+		weaponAmmoGui->setPosition({ gameObjects[1]->getPosition().x + 110, gameObjects[1]->getPosition().y + 70 });
+		weaponGui->setScale({ 0.3,0.3 });
+		weaponAmmoGui->setScale({ 0.3,0.3 });
+		weaponGui->setString(weapon);
+		weaponAmmoGui->setString(weaponCurrAmmo + "/" + weaponMaxAmmo);
+		guiInterfaceArray[1] = weaponGui;
+		guiInterfaceArray[2] = weaponAmmoGui;
+	}
+	else if (guiInterfaceArray[1] != nullptr)
+	{
+		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
+		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
+		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
+		guiInterfaceArray[1]->setString(weapon);
+		guiInterfaceArray[2]->setString(weaponCurrAmmo + "/" + weaponMaxAmmo);
+		guiInterfaceArray[1]->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 70 });
+		guiInterfaceArray[2]->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 70 });
+	}
+	if (guiInterfaceArray[3] == nullptr)
+	{
+
+	}
+	else if (guiInterfaceArray[3] != nullptr)
+	{
+
 	}
 }
 Game::Game()
