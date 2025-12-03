@@ -1,9 +1,12 @@
 # CPTS_122 Rougelike Game
 
 ## Authors
-William Armstrong  
-Jordan Vaandering  
-Axel Garvin  
+William Armstrong
+
+Jordan Vaandering
+
+Axel Garvin
+
 Clark Hallett
 
 ## About
