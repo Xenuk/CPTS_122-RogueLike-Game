@@ -1,9 +1,11 @@
 #include "Game.hpp"
 
 sf::Clock globalClock; // global clock
+sf::Clock timeClock;
 
 void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
 {
+	timeClock.stop();
 	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
 	sf::Sprite playButton(playButtonTexture);
 	playButton.setOrigin({ 47,10 });
@@ -78,7 +80,9 @@ void Game::escapeMenu(bool& loopVariable) // do relative camera menu.
 		window->draw(settingsButton);
 		window->draw(exitButton);
 		window->display();
+		
 	}
+	timeClock.start();
 }
 void Game::mainMenu()
 {
@@ -184,6 +188,68 @@ void Game::mainMenu()
 		window->display();
 	}
 }
+void Game::guiInterface() 
+{
+	int secs = 60;
+	std::string minutes, seconds;
+	guiInterfaceArray.resize(4,nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	fontArray.resize(4,nullptr);
+	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
+	{
+		secs += 60;
+	}
+	if (guiInterfaceArray[0] == nullptr)
+	{
+		if (fontArray[0] == nullptr)
+		{
+			fontArray[0] = createFont("Fonts/Pixeled.ttf");
+		}
+
+			sf::Text* time = new sf::Text(*fontArray[0], "N/A", 16);
+			if (9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60) <= 0)
+			{
+				minutes = std::to_string(0) + ":";
+			}
+			else
+			{
+				minutes = std::to_string(9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60)) + ":";
+			}
+			if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
+			{
+				seconds = "0" + std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+			}
+			else
+			{
+				seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+			}
+			time->setString(minutes + seconds);
+			time->setPosition({ gameObjects[1]->getPosition().x-10, gameObjects[1]->getPosition().y - 80 });
+			time->setScale({ 0.4,0.4 });
+			guiInterfaceArray[0] = time;
+	}
+	else if (guiInterfaceArray[0] != nullptr)
+	{
+
+		if (9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60) <= 0)
+		{
+			minutes = std::to_string(0) + ":";
+		}
+		else
+		{
+			minutes = std::to_string(9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60)) + ":";
+		}
+		if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
+		{
+			seconds = "0"+ std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		else
+		{
+			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		guiInterfaceArray[0]->setString(minutes + seconds);
+		guiInterfaceArray[0]->setPosition({gameObjects[1]->getPosition().x-10, gameObjects[1]->getPosition().y - 80});
+	}
+}
 Game::Game()
 {
 
@@ -195,8 +261,10 @@ Game::~Game()
 
 void Game::runGame()
 {
+	timeClock.restart();
+	float totalTimeAccumulated = 0.0f;
 	const float dt = 1.0f / 60.0f;  // had to use ai for this due to it being jittery as heck.
-	float accumulator = 0.0f;		// all time calc was used with chatgpt.
+	float accumulator = 0.0f;		// all the time calc except for the clock.getElapsedTime stuff, was used with chatgpt.
 									// the time shit fixxed the bug with the vibration when paused????
 	std::vector<GameObject*> newGameObjectArr;
 	gameObjects = newGameObjectArr;
@@ -335,33 +403,10 @@ void Game::runGame()
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 			{
-				escapeMenu(gameState); // freezes everything because its a while loop in itself. this is glitchy so make game logic work on a timer rather than fps. 
-				// Then we can pause time with this.
+				escapeMenu(gameState); // freezes everything because its a while loop in itself. 
 			}
-			// Reloading
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
-			{
-				// newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
-				newGameguy->getCurrWeapon()->reload();
-				std::cout << "Reloaded. Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
-			}
-
-			// Weapon Switching
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
-			{
-				newGameguy->setCurrWeapon(pistol);
-				std::cout << "Switched to pistol" << std::endl;
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
-			{
-				newGameguy->setCurrWeapon(rifle);
-				std::cout << "Switched to rifle" << std::endl;
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
-			{
-				newGameguy->setCurrWeapon(sniper);
-				std::cout << "Switched to sniper" << std::endl;
-			}
+			guiInterface();
+			weaponControls(pistol,rifle,sniper);
 			projectileTime++; // for cooldown system, rework later.
       enemyProjectileTime++;
       touchDamageTime++;
@@ -371,7 +416,33 @@ void Game::runGame()
 		drawToScreen();
 		}
 }
+void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper)
+{
+	// Reloading
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+	{
+		// newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
+		gameObjects[1]->getCurrWeapon()->reload();
+		std::cout << "Reloaded. Current Ammo: " << gameObjects[1]->getCurrWeapon()->getCurrAmmo() << std::endl;
+	}
 
+	// Weapon Switching
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+	{
+		gameObjects[1]->setCurrWeapon(pistol);
+		std::cout << "Switched to pistol" << std::endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+	{
+		gameObjects[1]->setCurrWeapon(rifle);
+		std::cout << "Switched to rifle" << std::endl;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+	{
+		gameObjects[1]->setCurrWeapon(sniper);
+		std::cout << "Switched to sniper" << std::endl;
+	}
+}
 void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is the actual game start
 {
 	sf::Time elapsed1 = globalClock.getElapsedTime();
@@ -387,7 +458,7 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is th
 
 void Game::drawToScreen()
 {
-	// creates a camera that follows the player(gameObject 1) based on window height and width.
+	// creates a camera that follows the player(gameObject 1) based on set window view height and width from createWindow func.
 	window->setView(sf::View({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y}, {static_cast<float>(width),static_cast<float>(height)}));
 	// draw below this function
 	window->clear(sf::Color::White);
@@ -401,6 +472,14 @@ void Game::drawToScreen()
 	{
 		// std::cout << "drawing projectile" << endl;
 		window->draw(*projectiles[i]);
+	}
+	for (int i = 0; i < guiInterfaceArray.size(); i++) // draws all the text for the gui.
+	{
+		if (guiInterfaceArray[i] != nullptr)
+		{
+			// std::cout << "drawing gui interface" << endl;
+			window->draw(*guiInterfaceArray[i]);
+		}
 	}
 	window->display();
 	// draw above this function
@@ -433,4 +512,13 @@ sf::Texture Game::createTexture(std::string filepath) // possibly useless but cl
 		std::cout << "error loading sprite" << std::endl;
 	}
 	return texture;
+}
+sf::Font* Game::createFont(std::string filepath)
+{
+	sf::Font* font = new sf::Font();
+	if (!font->openFromFile(filepath))
+	{
+		cout << "Error loading font from file.\n";
+	}
+	return font;
 }
