@@ -38,7 +38,7 @@ void GameObject::setCurrWeapon(Weapon *newCurrWeapon) {
 
 int GameObject::getCurrHealth()
 {
-	std::cout << "Get Health: " << currHealth << std::endl;
+	// std::cout << "Get Health: " << currHealth << std::endl;
 	return currHealth;
 }
 void GameObject::setCurrHealth(int newCurrHealth)
@@ -73,7 +73,7 @@ void GameObject::setDamage(int newDamage)
 
 float GameObject::getMoveSpeed()
 {
-	std::cout << "Get Movement Speed: " << moveSpeed << std::endl;
+	// std::cout << "Get Movement Speed: " << moveSpeed << std::endl;
 	return moveSpeed;
 }
 void GameObject::setMoveSpeed(float newMoveSpeed)
@@ -101,8 +101,8 @@ void GameObject::setSprite(std::string textureFilePath)
 }
 
 
-void GameObject::deincrementHealth() {
-  currHealth--;
+void GameObject::deincrementHealth(int damageTaken) {
+  currHealth = currHealth - damageTaken;
 }
 
 Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed,

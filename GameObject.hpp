@@ -35,7 +35,7 @@ public:
 
 	Weapon *getCurrWeapon(){return currWeapon;}
 
-   void deincrementHealth();
+   void deincrementHealth(int damageTaken);
 
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
