@@ -14,7 +14,7 @@ class Game
 {
 
 public:
-
+	void introMenu();
 	Game();
 	~Game();
 	void runGame();

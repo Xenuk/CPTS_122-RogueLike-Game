@@ -2,7 +2,8 @@
 
 sf::Clock globalClock; // global clock
 sf::Clock timeClock;
-
+bool flag = false;
+// based off of view of character 320 by 180 or smth like that
 void Game::escapeMenu(bool& loopVariable)
 {
 	timeClock.stop();
@@ -84,6 +85,7 @@ void Game::escapeMenu(bool& loopVariable)
 	}
 	timeClock.start();
 }
+// based on 1920 by 1080
 void Game::mainMenu()
 {
 	createWindow(320, 180); // creates 1920x1080 window with a view that is 320 by 180.
@@ -125,11 +127,15 @@ void Game::mainMenu()
 	// variables
 	int input = 0;
 	bool exit = false;
+	float delay = 0;
 	while (window->isOpen() && !exit)
 	{
 		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
+		while (timeClock.getElapsedTime().asSeconds() < delay); // so that inputs dont overlap.
+		// essentially if you click exit on pause menu it would exit the whole game due to the input being held down.
+		{
+		}
 		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-
 		while (const std::optional event = window->pollEvent())
 		{
 			if (event->is<sf::Event::Closed>())
@@ -138,6 +144,7 @@ void Game::mainMenu()
 			}
 
 		}
+		
 		if (window->hasFocus())
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
@@ -166,7 +173,10 @@ void Game::mainMenu()
 		{
 		case 1: // stages
 			runGame();
-
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) })); 
+			// this fixed the view taking too long to update.
 			break;
 		case 2: // shop
 
@@ -186,13 +196,14 @@ void Game::mainMenu()
 		window->draw(exitButton);
 		window->draw(settingsButton);
 		window->display();
+		
 	}
-}
+} 
 void Game::guiInterface() // this code is so bad im so sorry.
 {
 	int secs = 60;
 	std::string minutes, seconds;
-	guiInterfaceArray.resize(4, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	guiInterfaceArray.resize(5, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
 	fontArray.resize(4, nullptr);
 	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
 	{
@@ -256,8 +267,8 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
 		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
 		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
-		weaponGui->setPosition({ gameObjects[1]->getPosition().x + 80, gameObjects[1]->getPosition().y + 70 });
-		weaponAmmoGui->setPosition({ gameObjects[1]->getPosition().x + 110, gameObjects[1]->getPosition().y + 70 });
+		weaponGui->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 80 });
+		weaponAmmoGui->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 80 });
 		weaponGui->setScale({ 0.3,0.3 });
 		weaponAmmoGui->setScale({ 0.3,0.3 });
 		weaponGui->setString(weapon);
@@ -272,16 +283,29 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
 		guiInterfaceArray[1]->setString(weapon);
 		guiInterfaceArray[2]->setString(weaponCurrAmmo + "/" + weaponMaxAmmo);
-		guiInterfaceArray[1]->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 70 });
-		guiInterfaceArray[2]->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 70 });
+		guiInterfaceArray[1]->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 80 });
+		guiInterfaceArray[2]->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 80 });
 	}
 	if (guiInterfaceArray[3] == nullptr)
 	{
-
+		sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
+		sf::Text* scoreNumberGui = new sf::Text(*fontArray[0], "N/A", 16);
+		std::string score = std::to_string(gameObjects[1]->getScore());
+		scoreGui->setString("SCORE: ");
+		scoreGui->setScale({ 0.3,0.3 });
+		scoreGui->setPosition({ gameObjects[1]->getPosition().x - 130, gameObjects[1]->getPosition().y - 80 });
+		scoreNumberGui->setString(score);
+		scoreNumberGui->setScale({ 0.3,0.3 });
+		scoreNumberGui->setPosition({ gameObjects[1]->getPosition().x - 100, gameObjects[1]->getPosition().y - 80 });
+		guiInterfaceArray[3] = scoreGui;
+		guiInterfaceArray[4] = scoreNumberGui;
 	}
 	else if (guiInterfaceArray[3] != nullptr)
 	{
-
+		std::string score = std::to_string(gameObjects[1]->getScore());
+		guiInterfaceArray[4]->setString(score);
+		guiInterfaceArray[3]->setPosition({gameObjects[1]->getPosition().x - 150, gameObjects[1]->getPosition().y - 80});
+		guiInterfaceArray[4]->setPosition({ gameObjects[1]->getPosition().x - 120, gameObjects[1]->getPosition().y - 80 });
 	}
 }
 Game::Game()
@@ -292,21 +316,75 @@ Game::~Game()
 {
 
 }
+void Game::introMenu()
+{
+	//timeClock.stop();
+	sf::Texture instructionTexture = createTexture("Sprites/instructionsMenu.png");
+	sf::Sprite instructions(instructionTexture);
+	instructions.setOrigin({ 960,540 });
+	instructions.setPosition({ 959,539 });
+	instructions.setScale({ 1,1 });
 
+	sf::Texture exitButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ 960,950 });
+	exitButton.setScale({ 3,3 });
+	bool loop = true;
+	int input = 0;
+
+	while (window->isOpen() && loop)
+	{
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+			}
+
+
+		}
+		switch (input)
+		{
+		case 1: // start
+			loop = false;
+
+			break;
+		}
+		window->clear(sf::Color::Black);
+		window->draw(instructions);
+		window->draw(exitButton);
+		window->display();
+
+	}
+	//timeClock.start();
+}
 void Game::runGame()
 {
 	timeClock.restart();
-	float totalTimeAccumulated = 0.0f;
 	const float dt = 1.0f / 60.0f;  // had to use ai for this due to it being jittery as heck.
 	float accumulator = 0.0f;		// all the time calc except for the clock.getElapsedTime stuff, was used with chatgpt.
-									// the time shit fixxed the bug with the vibration when paused????
+									// the time calc fixxed the bug with the vibration when paused????
 	std::vector<GameObject*> newGameObjectArr;
 	gameObjects = newGameObjectArr;
 	sf::Time elapsed1 = globalClock.getElapsedTime();
 	std::cout << "Game Running Start Time: " << globalClock.getElapsedTime().asSeconds() << "s" << std::endl;
 	
 	int projectileTime = 0; // used for cooldown
-  int touchDamageTime = 0;
+	int touchDamageTime = 0;
 	int enemyProjectileTime = 0; // used for cooldown
 	sf::Texture map = createTexture("Sprites/SpriteMap.png");
 	sf::Texture texture = createTexture("Sprites/cat.png");
@@ -318,9 +396,9 @@ void Game::runGame()
 	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, true);
 	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
 
-	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol);
-	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0,0, pistol); // TODO: make walls not have weapons
-  GameObject* newEnemyGuy = new GameObject(texture4, 100, 100, 1, 0, 0.5, pistol);
+	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol, 0);
+	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0,0, pistol, 0); // TODO: make walls not have weapons
+  GameObject* newEnemyGuy = new GameObject(texture4, 100, 100, 1, 0, 0.5, pistol, 50);
 
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
@@ -332,7 +410,11 @@ void Game::runGame()
 	newWallGuy->setPosition({ -160,-120 });
 	newEnemyGuy->setOrigin({ 0,0 });
 	newEnemyGuy->setPosition({ 150,150 });
-
+	if (!flag)
+	{
+		introMenu();
+		flag = true;
+	}
 	bool gameState = true;
 	newGameguy->characterMoveControls();
 	while (window->isOpen() && gameState)
@@ -359,9 +441,9 @@ void Game::runGame()
 			const float aggroDistance = 75.0f;
 			GameObject* player = newGameguy;	
       int gameObjectsIndex = 0;
-			for (auto *obj : gameObjects) {
+		for (auto *obj : gameObjects) {
 				// check if obj is player or non-moving object
-        // NOTE: this logic will break if non-moving objects are added to gameObjects[]
+				// NOTE: this logic will break if non-moving objects are added to gameObjects[]
 	 			if (obj != player && obj->getMoveSpeed() > 0) {
 					sf::Vector2f direction = player->getPosition() - obj->getPosition();
 					float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -404,11 +486,12 @@ void Game::runGame()
           // check if enemy is dead
           if (obj->getCurrHealth() <= 0) {
             gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
+			gameObjects[1]->setScore(gameObjects[1]->getScore() + obj->getScore());
             delete obj;
           }
 	 			}
         gameObjectsIndex++;
-			}
+		}
 
 			if (window->hasFocus())
 			{
@@ -449,6 +532,11 @@ void Game::runGame()
 		}
 		drawToScreen();
 		}
+		for (int i = static_cast<int>(projectiles.size()) - 1; i >= 0; --i)
+		{
+			projectiles[i]->setCurrLifeTime(projectiles[i]->getLifeTime());
+		}
+		projectileHandling(); // deletes projectiles after we set lifetime to max from above code.
 }
 void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper)
 {
@@ -483,7 +571,8 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is th
 	std::cout << "CreatWindow Called At: " << elapsed1.asSeconds() << "s" << endl;
 	height = nHeight;
 	width = nWidth;
-	sf::RenderWindow* newWindow = new sf::RenderWindow(sf::VideoMode({ 1920,1080 }), "Game");
+	sf::RenderWindow* newWindow = new sf::RenderWindow(sf::VideoMode({ 1920,1080 }), "Game", sf::Style::Default, sf::State::Fullscreen);
+	
 	std::cout << "Window Rendered: Height = " << height << ", Width = " << width << ". " << std::endl;
 	// window->setFramerateLimit(60);
 	window = newWindow;

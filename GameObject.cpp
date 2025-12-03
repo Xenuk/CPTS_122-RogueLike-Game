@@ -7,7 +7,7 @@ Purpose: The main file that starts the program.
 #include "GameObject.hpp"
 
 GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown,
-	float nMoveSpeed, Weapon *nCurrWeapon) :
+	float nMoveSpeed, Weapon *nCurrWeapon, int nScore) :
 Sprite(texture)
 {
 	std::cout << "GameObject constructor called.\n" << std::endl;
@@ -23,7 +23,7 @@ Sprite(texture)
 	std::cout << "Current Attack Cooldown: " << projectileCooldown << std::endl;
 	currWeapon = nCurrWeapon;
 	std::cout << "Current Weapon: " << currWeapon->getName() << std::endl;
-	
+	score = nScore;
 }
 
 GameObject::~GameObject()
@@ -176,3 +176,11 @@ void GameObject::characterMoveControls()
 	// Potentially add std::cout << " " <<  << std::endl; 
 }
 
+int GameObject::getScore()
+{
+	return score;
+}
+void GameObject::setScore(int newScore)
+{
+	score = newScore;
+}

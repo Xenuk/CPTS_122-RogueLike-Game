@@ -15,7 +15,7 @@ class GameObject : public sf::Sprite
 public:
 
 	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, int nProjectileCooldown,
-		float nMoveSpeed, Weapon *nCurrWeapon);
+		float nMoveSpeed, Weapon *nCurrWeapon, int nScore);
 	~GameObject();
 	int getCurrHealth();
 	void setCurrHealth(int newCurrHealth);
@@ -30,6 +30,9 @@ public:
 
 	float getMoveSpeed();
 	void setMoveSpeed(float newMoveSpeed);
+
+	int getScore();
+	void setScore(int newScore);
 
 	//std::string getCurrWeapon(){return currWeapon;}
 
@@ -54,4 +57,5 @@ private:
 	int damage;
 	float moveSpeed;
 	Weapon *currWeapon;
+	int score;
 };
