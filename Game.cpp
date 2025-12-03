@@ -168,6 +168,290 @@ void Game::mainMenu() {
     window->draw(settingsButton);
     window->display();
   }
+void Game::escapeMenu(bool& loopVariable)
+{
+	timeClock.stop();
+	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite playButton(playButtonTexture);
+	playButton.setOrigin({ 47,10 });
+	playButton.setPosition({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y - 50 });
+	playButton.setScale({ 1,1 });
+
+	sf::Texture settingsButtonTexture = createTexture("Sprites/SettingsButton.png");
+	sf::Sprite settingsButton(settingsButtonTexture);
+	settingsButton.setOrigin({ 47,10 });
+	settingsButton.setPosition({ gameObjects[1]->getPosition().x, gameObjects[1]->getPosition().y }); // gets relative position.
+	settingsButton.setScale({ 1,1 });
+
+	sf::Texture exitButtonTexture = createTexture("Sprites/ExitButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y + 50 });
+	exitButton.setScale({ 1,1 });
+	bool loop = true;
+	int input = 0;
+	while (window->isOpen() && loop)
+	{
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (playButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+				else if (settingsButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 2;
+				}
+				else if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 3;
+				}
+			}
+
+
+		}
+		switch (input)
+		{
+		case 1: // resume
+			loop = false;
+
+			break;
+		case 2: // settings
+
+			break;
+		case 3: // exit
+			loop = false;
+			loopVariable = false;
+			for (int i = 0; i > gameObjects.size(); i++)
+			{
+				delete gameObjects[i];
+
+			}
+			break;
+		}
+		window->draw(playButton);
+		window->draw(settingsButton);
+		window->draw(exitButton);
+		window->display();
+		
+	}
+	timeClock.start();
+}
+void Game::mainMenu()
+{
+	createWindow(320, 180); // creates 1920x1080 window with a view that is 320 by 180.
+
+	sf::Time elapsed1 = globalClock.getElapsedTime();
+	std::cout << "Main Menu Opened At: " << elapsed1.asSeconds() << "s" << std::endl; // Functional Running Time Clock
+	//sf::Clock globalClock.restart();
+
+	sf::Texture backGroundTexture = createTexture("Sprites/SpriteMap.png");
+	sf::Sprite backGround(backGroundTexture);
+	backGround.setOrigin({ 500,450 });
+	backGround.setPosition({ 960,540 });
+	backGround.setScale({ 6,6 });
+
+	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite playButton(playButtonTexture);
+	playButton.setOrigin({ 47,10 });
+	playButton.setPosition({ 960,200 });
+	playButton.setScale({ 5,5 });
+
+	sf::Texture shopButtonTexture = createTexture("Sprites/ShopButton.png");
+	sf::Sprite shopButton(shopButtonTexture);
+	shopButton.setOrigin({ 47,10 });
+	shopButton.setPosition({ 960,400 });
+	shopButton.setScale({ 5,5 });
+
+	sf::Texture settingsButtonTexture = createTexture("Sprites/SettingsButton.png");
+	sf::Sprite settingsButton(settingsButtonTexture);
+	settingsButton.setOrigin({ 47,10 });
+	settingsButton.setPosition({ 960,600 });
+	settingsButton.setScale({ 5,5 });
+
+	sf::Texture exitButtonTexture = createTexture("Sprites/ExitButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ 960,800 });
+	exitButton.setScale({ 5,5 });
+
+	// variables
+	int input = 0;
+	bool exit = false;
+	while (window->isOpen() && !exit)
+	{
+		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (playButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+				else if (shopButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 2;
+				}
+				else if (settingsButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 3;
+				}
+				else if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 4;
+				}
+			}
+
+
+		}
+		switch (input)
+		{
+		case 1: // stages
+			runGame();
+
+			break;
+		case 2: // shop
+
+			break;
+		case 3: // settings
+
+			break;
+		case 4: // exit
+			exit = true;
+			break;
+		}
+		input = 0;
+		window->clear(sf::Color::Black);
+		window->draw(backGround);
+		window->draw(playButton);
+		window->draw(shopButton);
+		window->draw(exitButton);
+		window->draw(settingsButton);
+		window->display();
+	}
+}
+void Game::guiInterface() // this code is so bad im so sorry.
+{
+	int secs = 60;
+	std::string minutes, seconds;
+	guiInterfaceArray.resize(4, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	fontArray.resize(4, nullptr);
+	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
+	{
+		secs += 60;
+	}
+	if (guiInterfaceArray[0] == nullptr)
+	{
+		if (fontArray[0] == nullptr)
+		{
+			fontArray[0] = createFont("Fonts/Pixeled.ttf");
+		}
+
+		sf::Text* time = new sf::Text(*fontArray[0], "N/A", 16);
+		if (9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60) <= 0)
+		{
+			minutes = std::to_string(0) + ":";
+		}
+		else
+		{
+			minutes = std::to_string(9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60)) + ":";
+		}
+		if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
+		{
+			seconds = "0" + std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		else
+		{
+			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		time->setString(minutes + seconds);
+		time->setPosition({ gameObjects[1]->getPosition().x - 10, gameObjects[1]->getPosition().y - 80 });
+		time->setScale({ 0.4,0.4 });
+		guiInterfaceArray[0] = time;
+	}
+	else if (guiInterfaceArray[0] != nullptr)
+	{
+
+		if (9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60) <= 0)
+		{
+			minutes = std::to_string(0) + ":";
+		}
+		else
+		{
+			minutes = std::to_string(9 - static_cast<int>(timeClock.getElapsedTime().asSeconds() / 60)) + ":";
+		}
+		if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) < 10)
+		{
+			seconds = "0" + std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		else
+		{
+			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
+		}
+		guiInterfaceArray[0]->setString(minutes + seconds);
+		guiInterfaceArray[0]->setPosition({ gameObjects[1]->getPosition().x - 10, gameObjects[1]->getPosition().y - 80 });
+	}
+	if (guiInterfaceArray[1] == nullptr)
+	{
+		sf::Text* weaponGui = new sf::Text(*fontArray[0], "N/A", 16);
+		sf::Text* weaponAmmoGui = new sf::Text(*fontArray[0], "N/A", 16);
+		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
+		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
+		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
+		weaponGui->setPosition({ gameObjects[1]->getPosition().x + 80, gameObjects[1]->getPosition().y + 70 });
+		weaponAmmoGui->setPosition({ gameObjects[1]->getPosition().x + 110, gameObjects[1]->getPosition().y + 70 });
+		weaponGui->setScale({ 0.3,0.3 });
+		weaponAmmoGui->setScale({ 0.3,0.3 });
+		weaponGui->setString(weapon);
+		weaponAmmoGui->setString(weaponCurrAmmo + "/" + weaponMaxAmmo);
+		guiInterfaceArray[1] = weaponGui;
+		guiInterfaceArray[2] = weaponAmmoGui;
+	}
+	else if (guiInterfaceArray[1] != nullptr)
+	{
+		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
+		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
+		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
+		guiInterfaceArray[1]->setString(weapon);
+		guiInterfaceArray[2]->setString(weaponCurrAmmo + "/" + weaponMaxAmmo);
+		guiInterfaceArray[1]->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 70 });
+		guiInterfaceArray[2]->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 70 });
+	}
+	if (guiInterfaceArray[3] == nullptr)
+	{
+
+	}
+	else if (guiInterfaceArray[3] != nullptr)
+	{
+
+	}
+}
+Game::Game()
+{
+
 }
 void Game::guiInterface() {
   int secs = 60;
