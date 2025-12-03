@@ -4,10 +4,10 @@ Project: CPTS 122 Rougelike Game
 
 Participants: 
 
-Axel Garvin - Lab Section 4, 
-William Armstrong, 
+Axel Garvin - Lab Section 1, 
+William Armstrong - Lab Section 1, 
 Raymond Hallett - Lab Section 8, 
-Jordan Vaandering
+Jordan Vaandering - Lab Section 2
 
 Game Instructions:
 
