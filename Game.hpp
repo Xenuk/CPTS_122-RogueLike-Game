@@ -1,7 +1,7 @@
 /*
 File Name: Game.hpp
 Created: 11/21/2025
-Purpose: Fill This In
+Purpose: This is the Game Header File, it contains the Game Class, and carries the main game interface.
 */
 
 #pragma once
