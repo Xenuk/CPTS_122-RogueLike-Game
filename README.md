@@ -6,7 +6,7 @@ Participants:
 
 Axel Garvin - Lab Section 4, 
 William Armstrong, 
-Raymond Hallett, 
+Raymond Hallett - Lab Section 8, 
 Jordan Vaandering
 
 Game Instructions:
