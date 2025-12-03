@@ -306,25 +306,33 @@ void Game::runGame()
 	std::cout << "Game Running Start Time: " << globalClock.getElapsedTime().asSeconds() << "s" << std::endl;
 	
 	int projectileTime = 0; // used for cooldown
+  int touchDamageTime = 0;
+	int enemyProjectileTime = 0; // used for cooldown
 	sf::Texture map = createTexture("Sprites/SpriteMap.png");
 	sf::Texture texture = createTexture("Sprites/cat.png");
 	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png"); // static allocation so perhaps make it dynamic in the future if needed?
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
+  sf::Texture texture4 = createTexture("Sprites/ExampleEnemy.png");
 
 	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, true);
 	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, true);
 	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
-	GameObject* newGameguy = new GameObject(texture, 10, 10, 10, 20,1, pistol);
 
-	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0,0, pistol);
+	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol);
+	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0,0, pistol); // TODO: make walls not have weapons
+  GameObject* newEnemyGuy = new GameObject(texture4, 100, 100, 1, 0, 0.5, pistol);
 
 	newGameguy->setOrigin({ 8,8 });
 	newGameguy->setPosition({ 100,100 });
 	gameObjects.push_back(newWallGuy);
 	gameObjects.push_back(newGameguy); // the layer is based on who was DRAWN last, so look at draw function. // pushes it to the back of the vector.
+	gameObjects.push_back(newEnemyGuy);
 	Projectile* proj2 = nullptr;
 	newWallGuy->setOrigin({ 8,8 });
 	newWallGuy->setPosition({ -160,-120 });
+	newEnemyGuy->setOrigin({ 0,0 });
+	newEnemyGuy->setPosition({ 150,150 });
+
 	bool gameState = true;
 	newGameguy->characterMoveControls();
 	while (window->isOpen() && gameState)
@@ -347,20 +355,74 @@ void Game::runGame()
 		{ 
 			newGameguy->characterMoveControls();
 			
+			// Enemy Handling Logic
+			const float aggroDistance = 75.0f;
+			GameObject* player = newGameguy;	
+      int gameObjectsIndex = 0;
+			for (auto *obj : gameObjects) {
+				// check if obj is player or non-moving object
+        // NOTE: this logic will break if non-moving objects are added to gameObjects[]
+	 			if (obj != player && obj->getMoveSpeed() > 0) {
+					sf::Vector2f direction = player->getPosition() - obj->getPosition();
+					float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+          // nomarlize the direction
+          sf::Vector2f normalizedDirection = direction / distance;
+          // move enemy if within range
+					if (distance < aggroDistance) {
+						float enemySpeed = 0.2f;
+						obj->move(normalizedDirection * enemySpeed);
+					}
+          // if enemy touches player do damage
+          if (obj->getGlobalBounds().contains(player->getPosition())) {
+            if (10 <= touchDamageTime) {
+              player->deincrementHealth(obj->getDamage());
+              std::cout << "ENEMY DAMAGE TAKEN!" << std::endl;
+              std::cout << "Current Health: " << player->getCurrHealth();
+              touchDamageTime = 0;
+            }
+          }
+          // check if any projectiles hit enemy
+          int projIndex = 0;
+          for (auto *proj : projectiles) {
+            if (obj->getGlobalBounds().contains(proj->getPosition())) {
+              obj->deincrementHealth(proj->getDamage());
+              projectiles.erase(projectiles.begin() + projIndex); // ??? maybe ??? but maybe no???!!
+              delete proj;
+            }
+            projIndex++;
+          }
+          // enemy shoots if within range
+          //  if (distance < aggroDistance * 1.25) {
+          //    if (obj->getCurrWeapon()) {
+          //      if (obj->getCurrWeapon()->getCooldown() <= enemyProjectileTime) {
+          //        proj2 = obj->shootProjectile(window, texture3, 2, 10, obj->getCurrWeapon()->getLifeTime());
+          // projectiles.push_back(proj2);
+          //        enemyProjectileTime = 0;
+          //      }
+          //    }
+          //  }
+          // check if enemy is dead
+          if (obj->getCurrHealth() <= 0) {
+            gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
+            delete obj;
+          }
+	 			}
+        gameObjectsIndex++;
+			}
 
 			if (window->hasFocus())
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 				{
-					if (newGameguy->getCurrWeapon()->getAmmo() == -1 || newGameguy->getCurrWeapon()->getCurrAmmo() > 0)
+          Weapon *currWeapon = newGameguy->getCurrWeapon();
+					if (currWeapon->getAmmo() == -1 || currWeapon->getCurrAmmo() > 0)
 					{
-						if (newGameguy->getCurrWeapon()->getCooldown() <= projectileTime) // rework cooldown system.
-							// if (10 <= projectileTime) // rework cooldown system.
+						if (currWeapon->getCooldown() <= projectileTime) // rework cooldown system.
 						{
 							// calculates based on world coords not pixels for accuracy.
-							proj2 = newGameguy->shootProjectile(window, texture3, 2, 10, newGameguy->getCurrWeapon()->getLifeTime());
-							newGameguy->getCurrWeapon()->deincrementCurrAmmo();
-							std::cout << "Current Ammo: " << newGameguy->getCurrWeapon()->getCurrAmmo() << std::endl;
+							proj2 = newGameguy->shootProjectile(window, texture3, 2, currWeapon->getDamage(), currWeapon->getLifeTime());
+							currWeapon->deincrementCurrAmmo();
+							std::cout << "Current Ammo: " << currWeapon->getCurrAmmo() << std::endl;
 							projectiles.push_back(proj2);
 							projectileTime = 0;
 						}
@@ -380,6 +442,8 @@ void Game::runGame()
 			guiInterface();
 			weaponControls(pistol,rifle,sniper);
 			projectileTime++; // for cooldown system, rework later.
+      enemyProjectileTime++;
+      touchDamageTime++;
 			accumulator -= dt;
 			projectileHandling();
 		}

@@ -35,6 +35,8 @@ public:
 
 	Weapon *getCurrWeapon(){return currWeapon;}
 
+   void deincrementHealth(int damageTaken);
+
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
 
@@ -51,6 +53,5 @@ private:
 	int maxHealth;
 	int damage;
 	float moveSpeed;
-	//std::string currWeapon;
 	Weapon *currWeapon;
 };
