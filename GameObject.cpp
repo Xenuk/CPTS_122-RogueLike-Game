@@ -100,6 +100,11 @@ void GameObject::setSprite(std::string textureFilePath)
 	// std::cout << "Sprite Set To: " << texture << std::endl;
 }
 
+
+void GameObject::deincrementHealth() {
+  currHealth--;
+}
+
 Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed,
 	int nDamage, double nLifeTime)
 {
