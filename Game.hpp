@@ -24,6 +24,9 @@ public:
 	sf::Texture createTexture(std::string filepath);
 	void mainMenu();
 	void escapeMenu(bool& loopVariable);
+	void guiInterface();
+	sf::Font* createFont(std::string filepath);
+	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper);
 
 private:
 
@@ -31,7 +34,8 @@ private:
 	unsigned int height;
 	std::vector<GameObject*> gameObjects;
 	std::vector<Projectile*> projectiles;
-
+	std::vector<sf::Text*> guiInterfaceArray;
+	std::vector<sf::Font*> fontArray;
 	sf::RenderWindow* window;
 };
 
