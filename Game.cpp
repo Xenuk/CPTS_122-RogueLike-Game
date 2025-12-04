@@ -8,6 +8,7 @@ sf::Clock timeClock;
 static bool secsFlag = true;
 // based off of view of character 320 by 180 or smth like that
 
+//
 
 void Game::escapeMenu(bool& loopVariable)
 {
@@ -62,36 +63,12 @@ void Game::escapeMenu(bool& loopVariable)
 			}
 
 
-		}
-		switch (input)
-		{
-		case 1: // resume
-			loop = false;
 
-			break;
-		case 2: // settings
 
-			break;
-		case 3: // exit
-			loop = false;
-			loopVariable = false;
-			for (int i = 0; i > gameObjects.size(); i++)
-			{
-				delete gameObjects[i];
+//
 
-			}
-			break;
-		}
-		window->draw(playButton);
-		window->draw(settingsButton);
-		window->draw(exitButton);
-		window->display();
-		
-	}
-	timeClock.start();
-}
 // based on 1920 by 1080
-void Game::mainMenu()
+void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 {
 	createWindow(320, 180); // creates 1920x1080 window with a view that is 320 by 180.
 
@@ -133,7 +110,8 @@ void Game::mainMenu()
 	int input = 0;
 	bool exit = false;
 	float delay = 0;
-	while (window->isOpen() && !exit)
+
+	while (window->isOpen() && !exit) // Main menu loop
 	{
 		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 		while (timeClock.getElapsedTime().asSeconds() < delay); // so that inputs dont overlap.
@@ -150,7 +128,7 @@ void Game::mainMenu()
 
 		}
 		
-		if (window->hasFocus())
+		if (window->hasFocus()) // Get bounds for selecting options
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 			{
@@ -174,7 +152,8 @@ void Game::mainMenu()
 
 
 		}
-		switch (input)
+
+		switch (input) // Pick an option here
 		{
 		case 1: // stages
 			runGame();
@@ -194,9 +173,10 @@ void Game::mainMenu()
 			exit = true;
 			break;
 		}
+
 		input = 0;
 		window->clear(sf::Color::Black);
-		window->draw(backGround);
+		window->draw(backGround); // Render buttons
 		window->draw(playButton);
 		window->draw(shopButton);
 		window->draw(exitButton);
@@ -204,8 +184,9 @@ void Game::mainMenu()
 		window->display();
 		
 	}
-} 
-void Game::guiInterface() // this code is so bad im so sorry.
+}  // Main Menu End
+
+void Game::escapeMenu(bool& loopVariable) // Escape Menu Start (After starting, click Esc to enter)
 {
 	static int secs;
 	if (secsFlag)
@@ -215,6 +196,7 @@ void Game::guiInterface() // this code is so bad im so sorry.
 	std::string minutes, seconds;
 	guiInterfaceArray.resize(5, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
 	fontArray.resize(4, nullptr);
+
 	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
 	{
 		secsFlag = false;
@@ -244,11 +226,13 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		{
 			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
 		}
+
 		time->setString(minutes + seconds);
 		time->setPosition({ gameObjects[2]->getPosition().x - 10, gameObjects[2]->getPosition().y - 80 });
 		time->setScale({ 0.4,0.4 });
 		guiInterfaceArray[0] = time;
 	}
+
 	else if (guiInterfaceArray[0] != nullptr)
 	{
 
@@ -268,9 +252,11 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		{
 			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
 		}
+
 		guiInterfaceArray[0]->setString(minutes + seconds);
 		guiInterfaceArray[0]->setPosition({ gameObjects[2]->getPosition().x - 10, gameObjects[2]->getPosition().y - 80 });
 	}
+
 	if (guiInterfaceArray[1] == nullptr)
 	{
 		sf::Text* weaponGui = new sf::Text(*fontArray[0], "N/A", 16);
@@ -287,6 +273,7 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		guiInterfaceArray[1] = weaponGui;
 		guiInterfaceArray[2] = weaponAmmoGui;
 	}
+
 	else if (guiInterfaceArray[1] != nullptr)
 	{
 		std::string weaponMaxAmmo = std::to_string(gameObjects[2]->getCurrWeapon()->getAmmo());
@@ -297,6 +284,7 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		guiInterfaceArray[1]->setPosition({ gameObjects[2]->getPosition().x + 100, gameObjects[2]->getPosition().y + 80 });
 		guiInterfaceArray[2]->setPosition({ gameObjects[2]->getPosition().x + 130, gameObjects[2]->getPosition().y + 80 });
 	}
+
 	if (guiInterfaceArray[3] == nullptr)
 	{
 		sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
@@ -311,6 +299,7 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		guiInterfaceArray[3] = scoreGui;
 		guiInterfaceArray[4] = scoreNumberGui;
 	}
+
 	else if (guiInterfaceArray[3] != nullptr)
 	{
 		std::string score = std::to_string(gameObjects[2]->getScore());
@@ -318,76 +307,22 @@ void Game::guiInterface() // this code is so bad im so sorry.
 		guiInterfaceArray[3]->setPosition({gameObjects[2]->getPosition().x - 150, gameObjects[2]->getPosition().y - 80});
 		guiInterfaceArray[4]->setPosition({ gameObjects[2]->getPosition().x - 120, gameObjects[2]->getPosition().y - 80 });
 	}
-}
-
-
-void Game::introMenu()
-{
-	//timeClock.stop();
-	sf::Texture instructionTexture = createTexture("Sprites/instructionsMenu.png");
-	sf::Sprite instructions(instructionTexture);
-	instructions.setOrigin({ 960,540 });
-	instructions.setPosition({ 959,539 });
-	instructions.setScale({ 1,1 });
-
-	sf::Texture exitButtonTexture = createTexture("Sprites/PlayButton.png");
-	sf::Sprite exitButton(exitButtonTexture);
-	exitButton.setOrigin({ 47,10 });
-	exitButton.setPosition({ 960,950 });
-	exitButton.setScale({ 3,3 });
-	bool loop = true;
-	int input = 0;
-
-	while (window->isOpen() && loop)
-	{
-		while (const std::optional event = window->pollEvent())
-		{
-			if (event->is<sf::Event::Closed>())
-			{
-				window->close();
-			}
-
-		}
-
-		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
-		if (window->hasFocus())
-		{
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-			{
-				if (exitButton.getGlobalBounds().contains(mousePos))
-				{
-					input = 1;
-				}
-			}
-
-
-		}
-		switch (input)
-		{
-		case 1: // start
-			loop = false;
-
-			break;
-		}
-		window->clear(sf::Color::Black);
-		window->draw(instructions);
-		window->draw(exitButton);
-		window->display();
-
-	}
-	//timeClock.start();
-}
+} // GUI Interface End
 
 Game::Game() {}
 Game::~Game() {}
 
-void Game::runGame() {
+void Game::runGame() // Main Game Loop
+{
+
 	timeClock.restart();
+
 	std::vector<GameObject*> newGameObjectArr;
 	gameObjects = newGameObjectArr;
 	std::cout << "Game Running Start Time: " << globalClock.getElapsedTime().asSeconds() << "s" << std::endl;
 
 	int projectileTime = 0; // used for cooldown
+	int reloadTime = 0;
 	int touchDamageTime = 0;
 	int enemyProjectileTime = 0; // used for cooldown
 	sf::Texture map = createTexture("Sprites/SpriteMap.png");
@@ -395,7 +330,6 @@ void Game::runGame() {
 	sf::Texture texture2 = createTexture("Sprites/ExampleSpriteWall.png"); // static allocation so perhaps make it
 	// dynamic in the future if needed?
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
-
 	sf::Texture texture4 = createTexture("Sprites/ExampleEnemy.png");
 	sf::Texture rightWallTexture = createTexture("Sprites/MapRightWall.png");
 	sf::Texture leftWallTexture = createTexture("Sprites/MapLeftWall.png");
@@ -460,7 +394,8 @@ void Game::runGame() {
 
 	newEnemyGuy->setOrigin({ 0,0 });
 	newEnemyGuy->setPosition({ 150,150 });
-	if (!flag)
+
+	if (!flag) // Flag for showing intro or not
 	{
 		introMenu();
 		flag = true;
@@ -479,6 +414,7 @@ void Game::runGame() {
 	const float spawnRadius = 250.0f;  // spawn distance from player
 	const float aggroDistance = 200.0f;
 	static std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
+
 	bool gameState = true;
 	newGameguy->characterMoveControls(gameObjects);
 	while (window->isOpen() && gameState)
@@ -495,7 +431,9 @@ void Game::runGame() {
 				window->close();
 			}
 		}
+
 		accumulator += frameTime;
+
 		if (accumulator >= dt)
 		{
 			newGameguy->characterMoveControls(gameObjects);
@@ -505,12 +443,14 @@ void Game::runGame() {
 
 
 
-			if (window->hasFocus()) {
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+			if (window->hasFocus()) 
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) 
+				{
 					Weapon* currWeapon = newGameguy->getCurrWeapon();
-					if (currWeapon->getAmmo() == -1 || currWeapon->getCurrAmmo() > 0) {
-						if (currWeapon->getCooldown() <=
-							projectileTime) // rework cooldown system.
+					if (currWeapon->getAmmo() == -1 || currWeapon->getCurrAmmo() > 0) 
+					{
+						if (currWeapon->getCooldown() <= projectileTime && currWeapon->getReloadTime() < reloadTime) // rework cooldown system.
 						{
 							// calculates based on world coords not pixels for accuracy.
 							proj2 = newGameguy->shootProjectile(window, texture3, 2,
@@ -523,16 +463,19 @@ void Game::runGame() {
 							projectileTime = 0;
 						}
 					}
-					else {
+					else 
+					{
 						std::cout << "Ammo depleted" << std::endl;
 					}
 				}
 			}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))  // Opens Escape Menu
+			{
 				escapeMenu(gameState); // freezes everything because its a while loop in
 				// itself.
 			}
+
 			for (auto* obj : gameObjects)
 			{
 				// Enemy Handling Logic
@@ -540,7 +483,8 @@ void Game::runGame() {
 				// NOTE: this logic will break if non-moving objects are added to
 				// gameObjects[]
 				// TODO: add collision handling to enemies
-				if (obj != player && obj->getMoveSpeed() > 0) {
+				if (obj != player && obj->getMoveSpeed() > 0) 
+				{
 					sf::Vector2f direction = player->getPosition() - obj->getPosition();
 					float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 					sf::Vector2f normalizedDirection;
@@ -556,7 +500,23 @@ void Game::runGame() {
 					// move enemy if within range
 					if (distance <= aggroDistance + 2500) { // added 2500 to create a essentially infinite agroDistance because changing the value is dangerous.
 						float enemySpeed = obj->getMoveSpeed();
-						obj->move(normalizedDirection * enemySpeed);
+            bool collisionFlag = false;
+            for (auto* collisionObj : gameObjects) {
+              if (collisionObj == obj) continue;
+              if (obj->getGlobalBounds().contains(collisionObj->getPosition())){
+                collisionFlag = true;
+                break;
+              }
+            }
+						if (!collisionFlag) {
+							obj->move(normalizedDirection * enemySpeed);
+						} else {
+							std::uniform_real_distribution<float> altDir(0.0f,
+								2.0f * 3.14159265358979323846f);
+							float altDirAngle = altDir(rng);
+							sf::Vector2f randDir = { std::cos(altDirAngle), std::sin(altDirAngle) };
+							obj->move(randDir * enemySpeed);
+						}
 					}
 					// if enemy touches player do damage
 					if (obj->getGlobalBounds().contains(player->getPosition()) && player->getCurrHealth() > 0) {
@@ -569,8 +529,10 @@ void Game::runGame() {
 					}
 					// check if any projectiles hit enemy
 					int projIndex = 0;
-					for (auto* proj : projectiles) {
-						if (obj->getGlobalBounds().contains(proj->getPosition())) {
+					for (auto* proj : projectiles) 
+					{
+						if (obj->getGlobalBounds().contains(proj->getPosition())) 
+						{
 							// TODO: implement collision movement controls
 							obj->deincrementHealth(proj->getDamage());
 							projectiles.erase(projectiles.begin() +
@@ -592,7 +554,8 @@ void Game::runGame() {
 					//    }
 					//  }
 					// check if enemy is dead
-					if (obj->getCurrHealth() <= 0) {
+					if (obj->getCurrHealth() <= 0) 
+					{
 						gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
 						gameObjects[2]->setScore(gameObjects[2]->getScore() + obj->getScore());
 						delete obj;
@@ -600,7 +563,8 @@ void Game::runGame() {
 				}
 				// Player Health logic
 				if (obj == player) {
-					if (obj->getCurrHealth() <= 0) {
+					if (obj->getCurrHealth() <= 0) 
+					{
 						gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
 						delete obj;
 						gameState = false;
@@ -635,7 +599,8 @@ void Game::runGame() {
 				}
 			}
 			spawnTimer++;
-			if (spawnTimer >= spawnInterval) {
+			if (spawnTimer >= spawnInterval) 
+			{
 				spawnTimer = 0;
 				std::uniform_real_distribution<float> angleDist(0.0f,
 					2.0f * 3.14159265358979323846f);
@@ -657,8 +622,9 @@ void Game::runGame() {
 
 
 			guiInterface();
-			weaponControls(pistol, rifle, sniper);
+			weaponControls(pistol, rifle, sniper, reloadTime);
 			projectileTime++; // for cooldown system, rework later.
+      reloadTime++;
 			enemyProjectileTime++;
 			touchDamageTime++;
 			accumulator -= dt;
@@ -677,7 +643,7 @@ void Game::runGame() {
 
 	
 
-void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper)
+void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int &reloadTime)
 {
 	// Reloading
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
@@ -720,7 +686,8 @@ void Game::createWindow(unsigned int nWidth, unsigned int nHeight) // This is th
 
 
 
-void Game::drawToScreen() {
+void Game::drawToScreen() 
+{
   // creates a camera that follows the player(gameObject 1) based on set window
   // view height and width from createWindow func.
   window->setView(sf::View(
@@ -752,18 +719,22 @@ void Game::drawToScreen() {
   window->display();
   // draw above this function
 }
-void Game::projectileHandling() {
-  for (int i = static_cast<int>(projectiles.size()) - 1; i >= 0; --i) {
+void Game::projectileHandling() 
+{
+  for (int i = static_cast<int>(projectiles.size()) - 1; i >= 0; --i) 
+  {
     double curr = projectiles[i]->getCurrLifeTime();
     projectiles[i]->setCurrLifeTime(curr + 1.0);
 
-    if (projectiles[i]->getCurrLifeTime() >= projectiles[i]->getLifeTime()) {
+    if (projectiles[i]->getCurrLifeTime() >= projectiles[i]->getLifeTime()) 
+	{
       delete projectiles[i];
       projectiles.erase(projectiles.begin() + i);
     }
   }
 
-  for (auto *p : projectiles) {
+  for (auto *p : projectiles) 
+  {
     p->move(p->getDirectionAndSpeed());
   }
 }
@@ -771,12 +742,14 @@ sf::Texture Game::createTexture(std::string filepath) // possibly useless but cl
 {
   sf::Texture texture =
       sf::Texture(); // static not dynamic so possible problems in future.
-  if (!texture.loadFromFile(filepath)) {
+  if (!texture.loadFromFile(filepath))
+  {
     std::cout << "error loading sprite" << std::endl;
   }
   return texture;
 }
-sf::Font *Game::createFont(std::string filepath) {
+sf::Font *Game::createFont(std::string filepath) 
+{
   sf::Font *font = new sf::Font();
   if (!font->openFromFile(filepath)) {
     cout << "Error loading font from file.\n";
