@@ -401,9 +401,9 @@ void Game::runGame() // Main Game Loop
 	sf::Texture bottomLeftWallTexture = createTexture("Sprites/MapLeftBottom.png");
 	sf::Texture topRightWallTexture = createTexture("Sprites/MapRightTop.png");
 	sf::Texture topLeftWallTexture = createTexture("Sprites/MapLeftTop.png");
-	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, true);
-	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, true);
-	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
+	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, 30, true);
+	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, 90, true);
+	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, 120,true);
 
 
 	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol, 0);
@@ -711,6 +711,7 @@ void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int &re
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
 	{
 		// newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
+    reloadTime = 0;
 		gameObjects[2]->getCurrWeapon()->reload();
 		std::cout << "Reloaded. Current Ammo: " << gameObjects[2]->getCurrWeapon()->getCurrAmmo() << std::endl;
 	}
