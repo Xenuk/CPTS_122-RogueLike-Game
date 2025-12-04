@@ -1,3 +1,9 @@
+/*
+File Name: Save.hpp
+Created: 12/3/2025
+Purpose: Projectile content file, decs. Handles saving info and progress.
+*/
+
 #pragma once
 #include "Header.hpp"
 
