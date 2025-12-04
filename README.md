@@ -23,3 +23,11 @@ Using Score, you can buy upgrades at the Shop. These upgrades will stay with you
 You can use Esc on the Keyboard to access the Escape Menu while ingame. 
 You can select Exit to exit to the Main Menu.
 The Escape Menu you can be exited back to the Game by clicking Play.
+The Shop Menu can be accessed via the Main Menu.
+Once inside, you can add or remove Levels of Health, Damage (Scaling: Sniper>Rifle>Pistol), 
+Projectile (Sniper Rounds go Further/Faster, Rifle Reloads a bit Faster, etc Find out!), or Movement Speed.
+Subtracting will subtract levels, and increase Score up to level 0. This is a full Refund.
+Adding will subtract from your Score to add Levels. You need a minimum Score to Buy. 
+This minimum is equivalent to (50 * (LevelYouAreIncreasing*2)).
+Upon clicking Continue, you confirm your choices and go back to the Main Menu.
+Upon exiting the Game, your score and levels are saved to Save.csv.
