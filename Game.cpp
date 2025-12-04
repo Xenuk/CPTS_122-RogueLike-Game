@@ -1,3 +1,9 @@
+/*
+File Name: Game.cpp
+Created: 11/21/2025
+Purpose: This is the Game content File, it contains the Game Class, and carries the main game interface.
+*/
+
 #include "Game.hpp"
 #include <random>
 #include <ctime>
