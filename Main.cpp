@@ -13,9 +13,9 @@ Purpose: The main file that starts the program.
 
 int main()
 {
-	Tests::runAllTests();
-	// Game game = Game();
-	// game.mainMenu();
+	// Tests::runAllTests();
+	Game game = Game();
+	game.mainMenu();
 
 	return 0;
 }
