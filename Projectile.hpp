@@ -1,7 +1,7 @@
 /*
 File Name: Projectile.hpp
 Created: 11/20/2025
-Purpose: Fill in
+Purpose: Projjectile Header fille.
 */
 
 #pragma once
@@ -9,7 +9,9 @@ Purpose: Fill in
 
 class Projectile : public sf::Sprite 
 {
+
 public:
+
     // Projectile();
     Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed,
         double nLifeTime);
@@ -28,8 +30,10 @@ public:
     void setCurrLifeTime(double nCurrLifeTime);
 
 private:
+
     sf::Vector2f directionAndSpeed;
     int damage;
     double lifeTime;
     double currLifeTime;
+
 };
