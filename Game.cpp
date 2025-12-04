@@ -411,6 +411,7 @@ void Game::runGame() // Main Game Loop
 	std::cout << "Game Running Start Time: " << globalClock.getElapsedTime().asSeconds() << "s" << std::endl;
 
 	int projectileTime = 0; // used for cooldown
+  int reloadTime = 0;
 	int touchDamageTime = 0;
 	int enemyProjectileTime = 0; // used for cooldown
 	sf::Texture map = createTexture("Sprites/SpriteMap.png");
@@ -420,9 +421,9 @@ void Game::runGame() // Main Game Loop
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
 	sf::Texture texture4 = createTexture("Sprites/ExampleEnemy.png");
 
-	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, true);
-	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, true);
-	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
+	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, 5, true);
+	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, 20, true);
+	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, 30, true);
 
 
 	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol, 0);
@@ -497,8 +498,7 @@ void Game::runGame() // Main Game Loop
 					Weapon* currWeapon = newGameguy->getCurrWeapon();
 					if (currWeapon->getAmmo() == -1 || currWeapon->getCurrAmmo() > 0) 
 					{
-						if (currWeapon->getCooldown() <=
-							projectileTime) // rework cooldown system.
+						if (currWeapon->getCooldown() <= projectileTime && currWeapon->getReloadTime() < reloadTime) // rework cooldown system.
 						{
 							// calculates based on world coords not pixels for accuracy.
 							proj2 = newGameguy->shootProjectile(window, texture3, 2,
@@ -672,6 +672,7 @@ void Game::runGame() // Main Game Loop
 			guiInterface();
 			weaponControls(pistol, rifle, sniper);
 			projectileTime++; // for cooldown system, rework later.
+      reloadTime++;
 			enemyProjectileTime++;
 			touchDamageTime++;
 			accumulator -= dt;
@@ -696,6 +697,7 @@ void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
 	{
 		// newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
+    reloadTime = 0;
 		gameObjects[1]->getCurrWeapon()->reload();
 		std::cout << "Reloaded. Current Ammo: " << gameObjects[1]->getCurrWeapon()->getCurrAmmo() << std::endl;
 	}
