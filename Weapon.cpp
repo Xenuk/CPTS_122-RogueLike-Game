@@ -23,24 +23,31 @@ std::string Weapon::getName() const { return name; }
 int Weapon::getDamage() const { return damage; }
 double Weapon::getLifeTime() const { return lifeTime; }
 int Weapon::getCooldown() const { return cooldown; }
+
 int Weapon::getAmmo() const { return ammo; }
 int Weapon::getCurrAmmo() const { return currAmmo; }
+
 int Weapon::getReloadTime() const { return reloadTime; }
 bool Weapon::isAutomatic() const { return automatic; }
 
 void Weapon::setName(std::string nName) { name = nName; }
 void Weapon::setDamage(int nDamage) { damage = nDamage; }
+
 void Weapon::setLifeTime(double nLifeTime) { lifeTime = nLifeTime; }
 void Weapon::setCooldown(int nCooldown) { cooldown = nCooldown; }
+
 void Weapon::setAmmo(int nAmmo) { ammo = nAmmo; }
 void Weapon::setCurrAmmo(int nCurrAmmo) { currAmmo = nCurrAmmo; }
+
 void Weapon::setReloadTime(int nReloadTime) { reloadTime = nReloadTime; }
 void Weapon::setAutomatic(bool nAutomatic) { automatic = nAutomatic; }
-void Weapon::deincrementCurrAmmo() {
+void Weapon::deincrementCurrAmmo() 
+{
   if (this->currAmmo > 0){
     currAmmo--;
   }
 }
+
 void Weapon::reload() {
   currAmmo = ammo;
 }
