@@ -6,7 +6,6 @@
 sf::Clock globalClock; // global clock
 sf::Clock timeClock;
 static bool secsFlag = true;
-bool flag = false;
 // based off of view of character 320 by 180 or smth like that
 
 
