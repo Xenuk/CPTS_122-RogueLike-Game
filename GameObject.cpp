@@ -122,7 +122,7 @@ Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Textu
 	return lol;
 }
 
-void GameObject::characterMoveControls()
+void GameObject::characterMoveControls(std::vector<GameObject*> gameObjectArray)
 {
 	static bool spriteInitalized = false;
 	static sf::IntRect dir[4]; // static mean its only intialized first call and is local scope but its storage is global.
@@ -142,19 +142,48 @@ void GameObject::characterMoveControls()
 	float movementVerticle = 0, movementHorizontal = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Down))
 	{
-		movementVerticle = movementVerticle + moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[5]->getGlobalBounds()))
+		{
+			
+		}
+		else
+		{
+			movementVerticle = movementVerticle + moveSpeed;
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A) ||  sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
 	{
-		movementHorizontal = movementHorizontal - moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[4]->getGlobalBounds()))
+		{
+
+		}
+		else
+		{
+			movementHorizontal = movementHorizontal - moveSpeed;
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
 	{
-		movementHorizontal = movementHorizontal + moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[3]->getGlobalBounds()))
+		{
+
+		}
+		else
+		{
+			movementHorizontal = movementHorizontal + moveSpeed;
+		}
+		
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up))
 	{
-		movementVerticle = movementVerticle - moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[1]->getGlobalBounds()))
+		{
+
+		}
+		else
+		{
+			movementVerticle = movementVerticle - moveSpeed;
+		}
 	}
 	if (movementVerticle != 0 && movementHorizontal != 0) {
 		//0.707106781187 ~ ((1+1)^(1/2))/2

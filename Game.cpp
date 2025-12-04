@@ -16,19 +16,19 @@ void Game::escapeMenu(bool& loopVariable)
 	sf::Texture playButtonTexture = createTexture("Sprites/PlayButton.png");
 	sf::Sprite playButton(playButtonTexture);
 	playButton.setOrigin({ 47,10 });
-	playButton.setPosition({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y - 50 });
+	playButton.setPosition({ gameObjects[2]->getPosition().x,gameObjects[2]->getPosition().y - 50 });
 	playButton.setScale({ 1,1 });
 
 	sf::Texture settingsButtonTexture = createTexture("Sprites/SettingsButton.png");
 	sf::Sprite settingsButton(settingsButtonTexture);
 	settingsButton.setOrigin({ 47,10 });
-	settingsButton.setPosition({ gameObjects[1]->getPosition().x, gameObjects[1]->getPosition().y }); // gets relative position.
+	settingsButton.setPosition({ gameObjects[2]->getPosition().x, gameObjects[2]->getPosition().y }); // gets relative position.
 	settingsButton.setScale({ 1,1 });
 
 	sf::Texture exitButtonTexture = createTexture("Sprites/ExitButton.png");
 	sf::Sprite exitButton(exitButtonTexture);
 	exitButton.setOrigin({ 47,10 });
-	exitButton.setPosition({ gameObjects[1]->getPosition().x,gameObjects[1]->getPosition().y + 50 });
+	exitButton.setPosition({ gameObjects[2]->getPosition().x,gameObjects[2]->getPosition().y + 50 });
 	exitButton.setScale({ 1,1 });
 	bool loop = true;
 	int input = 0;
@@ -185,7 +185,7 @@ void Game::mainMenu()
 			// this fixed the view taking too long to update.
 			break;
 		case 2: // shop
-
+			shopMenu();
 			break;
 		case 3: // settings
 
@@ -240,7 +240,7 @@ void Game::guiInterface() // this code is so bad im so sorry.
 			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
 		}
 		time->setString(minutes + seconds);
-		time->setPosition({ gameObjects[1]->getPosition().x - 10, gameObjects[1]->getPosition().y - 80 });
+		time->setPosition({ gameObjects[2]->getPosition().x - 10, gameObjects[2]->getPosition().y - 80 });
 		time->setScale({ 0.4,0.4 });
 		guiInterfaceArray[0] = time;
 	}
@@ -264,17 +264,17 @@ void Game::guiInterface() // this code is so bad im so sorry.
 			seconds = std::to_string(secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()));
 		}
 		guiInterfaceArray[0]->setString(minutes + seconds);
-		guiInterfaceArray[0]->setPosition({ gameObjects[1]->getPosition().x - 10, gameObjects[1]->getPosition().y - 80 });
+		guiInterfaceArray[0]->setPosition({ gameObjects[2]->getPosition().x - 10, gameObjects[2]->getPosition().y - 80 });
 	}
 	if (guiInterfaceArray[1] == nullptr)
 	{
 		sf::Text* weaponGui = new sf::Text(*fontArray[0], "N/A", 16);
 		sf::Text* weaponAmmoGui = new sf::Text(*fontArray[0], "N/A", 16);
-		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
-		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
-		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
-		weaponGui->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 80 });
-		weaponAmmoGui->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 80 });
+		std::string weaponMaxAmmo = std::to_string(gameObjects[2]->getCurrWeapon()->getAmmo());
+		std::string weaponCurrAmmo = std::to_string(gameObjects[2]->getCurrWeapon()->getCurrAmmo());
+		std::string weapon = gameObjects[2]->getCurrWeapon()->getName();
+		weaponGui->setPosition({ gameObjects[2]->getPosition().x + 100, gameObjects[2]->getPosition().y + 80 });
+		weaponAmmoGui->setPosition({ gameObjects[2]->getPosition().x + 130, gameObjects[2]->getPosition().y + 80 });
 		weaponGui->setScale({ 0.3,0.3 });
 		weaponAmmoGui->setScale({ 0.3,0.3 });
 		weaponGui->setString(weapon);
@@ -284,34 +284,34 @@ void Game::guiInterface() // this code is so bad im so sorry.
 	}
 	else if (guiInterfaceArray[1] != nullptr)
 	{
-		std::string weaponMaxAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getAmmo());
-		std::string weaponCurrAmmo = std::to_string(gameObjects[1]->getCurrWeapon()->getCurrAmmo());
-		std::string weapon = gameObjects[1]->getCurrWeapon()->getName();
+		std::string weaponMaxAmmo = std::to_string(gameObjects[2]->getCurrWeapon()->getAmmo());
+		std::string weaponCurrAmmo = std::to_string(gameObjects[2]->getCurrWeapon()->getCurrAmmo());
+		std::string weapon = gameObjects[2]->getCurrWeapon()->getName();
 		guiInterfaceArray[1]->setString(weapon);
 		guiInterfaceArray[2]->setString(weaponCurrAmmo + "/" + weaponMaxAmmo);
-		guiInterfaceArray[1]->setPosition({ gameObjects[1]->getPosition().x + 100, gameObjects[1]->getPosition().y + 80 });
-		guiInterfaceArray[2]->setPosition({ gameObjects[1]->getPosition().x + 130, gameObjects[1]->getPosition().y + 80 });
+		guiInterfaceArray[1]->setPosition({ gameObjects[2]->getPosition().x + 100, gameObjects[2]->getPosition().y + 80 });
+		guiInterfaceArray[2]->setPosition({ gameObjects[2]->getPosition().x + 130, gameObjects[2]->getPosition().y + 80 });
 	}
 	if (guiInterfaceArray[3] == nullptr)
 	{
 		sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
 		sf::Text* scoreNumberGui = new sf::Text(*fontArray[0], "N/A", 16);
-		std::string score = std::to_string(gameObjects[1]->getScore());
+		std::string score = std::to_string(gameObjects[2]->getScore());
 		scoreGui->setString("SCORE: ");
 		scoreGui->setScale({ 0.3,0.3 });
-		scoreGui->setPosition({ gameObjects[1]->getPosition().x - 130, gameObjects[1]->getPosition().y - 80 });
+		scoreGui->setPosition({ gameObjects[2]->getPosition().x - 130, gameObjects[2]->getPosition().y - 80 });
 		scoreNumberGui->setString(score);
 		scoreNumberGui->setScale({ 0.3,0.3 });
-		scoreNumberGui->setPosition({ gameObjects[1]->getPosition().x - 100, gameObjects[1]->getPosition().y - 80 });
+		scoreNumberGui->setPosition({ gameObjects[2]->getPosition().x - 100, gameObjects[2]->getPosition().y - 80 });
 		guiInterfaceArray[3] = scoreGui;
 		guiInterfaceArray[4] = scoreNumberGui;
 	}
 	else if (guiInterfaceArray[3] != nullptr)
 	{
-		std::string score = std::to_string(gameObjects[1]->getScore());
+		std::string score = std::to_string(gameObjects[2]->getScore());
 		guiInterfaceArray[4]->setString(score);
-		guiInterfaceArray[3]->setPosition({gameObjects[1]->getPosition().x - 150, gameObjects[1]->getPosition().y - 80});
-		guiInterfaceArray[4]->setPosition({ gameObjects[1]->getPosition().x - 120, gameObjects[1]->getPosition().y - 80 });
+		guiInterfaceArray[3]->setPosition({gameObjects[2]->getPosition().x - 150, gameObjects[2]->getPosition().y - 80});
+		guiInterfaceArray[4]->setPosition({ gameObjects[2]->getPosition().x - 120, gameObjects[2]->getPosition().y - 80 });
 	}
 }
 
@@ -392,7 +392,14 @@ void Game::runGame() {
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
 
 	sf::Texture texture4 = createTexture("Sprites/ExampleEnemy.png");
-
+	sf::Texture rightWallTexture = createTexture("Sprites/MapRightWall.png");
+	sf::Texture leftWallTexture = createTexture("Sprites/MapLeftWall.png");
+	sf::Texture topWallTexture = createTexture("Sprites/MapTopWall.png");
+	sf::Texture bottomWallTexture = createTexture("Sprites/MapBottomWall.png");
+	sf::Texture bottomRightWallTexture = createTexture("Sprites/MapRightBottom.png");
+	sf::Texture bottomLeftWallTexture = createTexture("Sprites/MapLeftBottom.png");
+	sf::Texture topRightWallTexture = createTexture("Sprites/MapRightTop.png");
+	sf::Texture topLeftWallTexture = createTexture("Sprites/MapLeftTop.png");
 	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, true);
 	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, true);
 	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, true);
@@ -401,15 +408,51 @@ void Game::runGame() {
 	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol, 0);
 	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0, 0, pistol, 0); // TODO: make walls not have weapons
 	GameObject* newEnemyGuy = new GameObject(texture4, 100, 100, 1, 0, 0.5, pistol, 10);
+	GameObject* rightWall = new GameObject(rightWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* topWall = new GameObject(topWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* bottomWall = new GameObject(bottomWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* leftWall = new GameObject(leftWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* rightBottomWall = new GameObject(bottomRightWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* rightTopWall = new GameObject(topRightWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* leftTopWall = new GameObject(topLeftWallTexture, 10, 10, 0, 0, 0, pistol, 0);
+	GameObject* leftBottomWall = new GameObject(bottomLeftWallTexture, 10, 10, 0, 0, 0, pistol, 0);
 
 	newGameguy->setOrigin({ 8,8 });
-	newGameguy->setPosition({ 100,100 });
+	newGameguy->setPosition({ 400,400 });
 	gameObjects.push_back(newWallGuy);
+	gameObjects.push_back(topWall);
 	gameObjects.push_back(newGameguy); // the layer is based on who was DRAWN last, so look at draw function. // pushes it to the back of the vector.
-	gameObjects.push_back(newEnemyGuy);
+	gameObjects.push_back(rightWall);
+	gameObjects.push_back(leftWall);
+	gameObjects.push_back(bottomWall);
+	gameObjects.push_back(rightTopWall);
+	gameObjects.push_back(rightBottomWall);
+	gameObjects.push_back(leftTopWall);
+	gameObjects.push_back(leftBottomWall);
 	Projectile* proj2 = nullptr;
-	newWallGuy->setOrigin({ 8,8 });
-	newWallGuy->setPosition({ -160,-120 });
+	// wall positions
+	newWallGuy->setOrigin({ 0,0 });
+	newWallGuy->setPosition({ 0,0 });
+	rightWall->setOrigin({ 0,0 });
+	rightWall->setPosition({ 1024,0 });
+	leftWall->setOrigin({ 0,0 });
+	leftWall->setPosition({ -1024,0 });
+	topWall->setOrigin({ 0,0 });
+	topWall->setPosition({ 0,-944 });
+	bottomWall->setOrigin({ 0,0 });
+	bottomWall->setPosition({ 0,944 });
+	newWallGuy->setOrigin({ 0,0 });
+	newWallGuy->setPosition({ 0,0 });
+
+	rightTopWall->setOrigin({ 0,0 });
+	rightTopWall->setPosition({ 1024,-944 });
+	leftTopWall->setOrigin({ 0,0 });
+	leftTopWall->setPosition({ -1024,-944 });
+	rightBottomWall->setOrigin({ 0,0 });
+	rightBottomWall->setPosition({ 1024,944 });
+	leftBottomWall->setOrigin({ 0,0 });
+	leftBottomWall->setPosition({ -1024,944 });
+
 	newEnemyGuy->setOrigin({ 0,0 });
 	newEnemyGuy->setPosition({ 150,150 });
 	if (!flag)
@@ -432,7 +475,7 @@ void Game::runGame() {
 	const float aggroDistance = 200.0f;
 	static std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
 	bool gameState = true;
-	newGameguy->characterMoveControls();
+	newGameguy->characterMoveControls(gameObjects);
 	while (window->isOpen() && gameState)
 	{
 		float frameTime = globalClock.restart().asSeconds();
@@ -450,7 +493,7 @@ void Game::runGame() {
 		accumulator += frameTime;
 		if (accumulator >= dt)
 		{
-			newGameguy->characterMoveControls();
+			newGameguy->characterMoveControls(gameObjects);
 
 			GameObject* player = newGameguy;
 			int gameObjectsIndex = 0;
@@ -546,7 +589,7 @@ void Game::runGame() {
 					// check if enemy is dead
 					if (obj->getCurrHealth() <= 0) {
 						gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
-						gameObjects[1]->setScore(gameObjects[1]->getScore() + obj->getScore());
+						gameObjects[2]->setScore(gameObjects[2]->getScore() + obj->getScore());
 						delete obj;
 					}
 				}
@@ -635,24 +678,24 @@ void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
 	{
 		// newGameguy->getCurrWeapon()->setCurrAmmo(newGameguy->getCurrWeapon()->getAmmo());
-		gameObjects[1]->getCurrWeapon()->reload();
-		std::cout << "Reloaded. Current Ammo: " << gameObjects[1]->getCurrWeapon()->getCurrAmmo() << std::endl;
+		gameObjects[2]->getCurrWeapon()->reload();
+		std::cout << "Reloaded. Current Ammo: " << gameObjects[2]->getCurrWeapon()->getCurrAmmo() << std::endl;
 	}
 
 	// Weapon Switching
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
 	{
-		gameObjects[1]->setCurrWeapon(pistol);
+		gameObjects[2]->setCurrWeapon(pistol);
 		std::cout << "Switched to pistol" << std::endl;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
 	{
-		gameObjects[1]->setCurrWeapon(rifle);
+		gameObjects[2]->setCurrWeapon(rifle);
 		std::cout << "Switched to rifle" << std::endl;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
 	{
-		gameObjects[1]->setCurrWeapon(sniper);
+		gameObjects[2]->setCurrWeapon(sniper);
 		std::cout << "Switched to sniper" << std::endl;
 	}
 }
@@ -676,7 +719,7 @@ void Game::drawToScreen() {
   // creates a camera that follows the player(gameObject 1) based on set window
   // view height and width from createWindow func.
   window->setView(sf::View(
-      {gameObjects[1]->getPosition().x, gameObjects[1]->getPosition().y},
+      {gameObjects[2]->getPosition().x, gameObjects[2]->getPosition().y},
       {static_cast<float>(width), static_cast<float>(height)}));
   // draw below this function
   window->clear(sf::Color::White);
@@ -735,3 +778,208 @@ sf::Font *Game::createFont(std::string filepath) {
   }
   return font;
 }
+void Game::shopMenu() // Shop Menu Start 
+{
+
+	sf::Time elapsed1 = globalClock.getElapsedTime();
+	std::cout << "Shop Menu Opened At: " << elapsed1.asSeconds() << "s" << std::endl; // Functional Running Time Clock
+	//sf::Clock globalClock.restart();
+
+	sf::Texture backGroundTexture = createTexture("Sprites/SpriteMap.png");
+	sf::Sprite backGround(backGroundTexture);
+	backGround.setOrigin({ 500,450 });
+	backGround.setPosition({ 960,540 });
+	backGround.setScale({ 6,6 });
+
+	sf::Texture healthButtonTexture = createTexture("Sprites/Health.png");
+	sf::Sprite healthButton(healthButtonTexture);
+	healthButton.setOrigin({ 47,10 });
+	healthButton.setPosition({ 760,300 });
+	healthButton.setScale({ 3,3 });
+	sf::Texture addButtonHTexture = createTexture("Sprites/Add.png");
+	sf::Sprite addButtonH(addButtonHTexture);
+	addButtonH.setOrigin({ 47,10 });
+	addButtonH.setPosition({ 860,300 });
+	addButtonH.setScale({ 3,3 });
+	sf::Texture subButtonHTexture = createTexture("Sprites/Subtract.png");
+	sf::Sprite subButtonH(subButtonHTexture);
+	subButtonH.setOrigin({ 47,10 });
+	subButtonH.setPosition({ 960,300 });
+	subButtonH.setScale({ 3,3 });
+
+	sf::Texture damageButtonTexture = createTexture("Sprites/Damage.png");
+	sf::Sprite damageButton(damageButtonTexture);
+	damageButton.setOrigin({ 47,10 });
+	damageButton.setPosition({ 760,400 });
+	damageButton.setScale({ 3,3 });
+	sf::Texture addButtonDTexture = createTexture("Sprites/Add.png");
+	sf::Sprite addButtonD(addButtonDTexture);
+	addButtonD.setOrigin({ 47,10 });
+	addButtonD.setPosition({ 860,400 });
+	addButtonD.setScale({ 3,3 });
+	sf::Texture subButtonDTexture = createTexture("Sprites/Subtract.png");
+	sf::Sprite subButtonD(subButtonDTexture);
+	subButtonD.setOrigin({ 47,10 });
+	subButtonD.setPosition({ 960,400 });
+	subButtonD.setScale({ 3,3 });
+
+	sf::Texture movementButtonTexture = createTexture("Sprites/Movement.png");
+	sf::Sprite movementButton(movementButtonTexture);
+	movementButton.setOrigin({ 47,10 });
+	movementButton.setPosition({ 760,500 });
+	movementButton.setScale({ 3,3 });
+	sf::Texture addButtonMTexture = createTexture("Sprites/Add.png");
+	sf::Sprite addButtonM(addButtonMTexture);
+	addButtonM.setOrigin({ 47,10 });
+	addButtonM.setPosition({ 860,500 });
+	addButtonM.setScale({ 3,3 });
+	sf::Texture subButtonMTexture = createTexture("Sprites/Subtract.png");
+	sf::Sprite subButtonM(subButtonMTexture);
+	subButtonM.setOrigin({ 47,10 });
+	subButtonM.setPosition({ 960,500 });
+	subButtonM.setScale({ 3,3 });
+
+
+	sf::Texture projectileButtonTexture = createTexture("Sprites/Projectile.png");
+	sf::Sprite projectileButton(projectileButtonTexture);
+	projectileButton.setOrigin({ 47,10 });
+	projectileButton.setPosition({ 760,600 });
+	projectileButton.setScale({ 3,3 });
+	sf::Texture addButtonPTexture = createTexture("Sprites/Add.png");
+	sf::Sprite addButtonP(addButtonPTexture);
+	addButtonP.setOrigin({ 47,10 });
+	addButtonP.setPosition({ 860,600 });
+	addButtonP.setScale({ 3,3 });
+	sf::Texture subButtonPTexture = createTexture("Sprites/Subtract.png");
+	sf::Sprite subButtonP(subButtonPTexture);
+	subButtonP.setOrigin({ 47,10 });
+	subButtonP.setPosition({ 960,600 });
+	subButtonP.setScale({ 3,3 });
+
+	sf::Texture contButtonTexture = createTexture("Sprites/Continue.png");
+	sf::Sprite contButton(contButtonTexture);
+	contButton.setOrigin({ 47,10 });
+	contButton.setPosition({ 960,800 });
+	contButton.setScale({ 4,4 });
+
+	// variables
+	int input = 0;
+	bool exit = false;
+	float delay = 0;
+
+	while (window->isOpen() && !exit) // Shop menu loop
+	{
+		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
+		while (timeClock.getElapsedTime().asSeconds() < delay); // so that inputs dont overlap.
+		// essentially if you click exit on pause menu it would exit the whole game due to the input being held down.
+		{
+		}
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+
+		if (window->hasFocus()) // Get bounds for selecting options
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (addButtonD.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+				else if (subButtonD.getGlobalBounds().contains(mousePos))
+				{
+					input = 2;
+				}
+				else if (addButtonH.getGlobalBounds().contains(mousePos))
+				{
+					input = 3;
+				}
+				else if (subButtonH.getGlobalBounds().contains(mousePos))
+				{
+					input = 4;
+				}
+				else if (addButtonM.getGlobalBounds().contains(mousePos))
+				{
+					input = 5;
+				}
+				else if (subButtonM.getGlobalBounds().contains(mousePos))
+				{
+					input = 6;
+				}
+				else if (addButtonP.getGlobalBounds().contains(mousePos))
+				{
+					input = 7;
+				}
+				else if (subButtonP.getGlobalBounds().contains(mousePos))
+				{
+					input = 8;
+				}
+				else if (contButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 9;
+				}
+			}
+
+
+		}
+
+		switch (input) // These are all multipliers that are additive and will be saved to file, each gun effected dif
+		{
+		case 1: // add dmg
+
+			break;
+		case 2: // sub dmg
+
+
+			break;
+		case 3: // add hlth
+
+
+			break;
+		case 4: // sub hlth
+
+
+			break;
+		case 5: // add sped
+
+
+			break;
+		case 6: // sub sped
+
+
+			break;
+		case 7: // add proj sped
+
+
+			break;
+		case 8: // sub proj sped
+
+
+			break;
+		case 9: // exit
+			exit = true;
+			break;
+		}
+
+		input = 0;
+		window->clear(sf::Color::Black);
+		window->draw(backGround); // Render buttons
+		window->draw(addButtonD);
+		window->draw(subButtonD);
+		window->draw(addButtonH);
+		window->draw(subButtonH);
+		window->draw(addButtonM);
+		window->draw(subButtonM);
+		window->draw(addButtonP);
+		window->draw(subButtonP);
+		window->draw(contButton);
+		window->display();
+
+	}
+}  // Shop Menu End

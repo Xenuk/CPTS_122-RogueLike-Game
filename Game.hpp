@@ -27,6 +27,7 @@ public:
 	void guiInterface();
 	sf::Font* createFont(std::string filepath);
 	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper);
+	void shopMenu();
 
 private:
 
