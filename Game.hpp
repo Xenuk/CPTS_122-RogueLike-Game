@@ -1,7 +1,7 @@
 /*
 File Name: Game.hpp
 Created: 11/21/2025
-Purpose: Fill This In
+Purpose: This is the Game Header File, it contains the Game Class, and carries the main game interface.
 */
 
 #pragma once
@@ -9,21 +9,34 @@ Purpose: Fill This In
 #include "Header.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp"
+#include "Save.hpp"
 
 class Game
 {
 
 public:
 
+	void introMenu();
 	Game();
 	~Game();
+
 	void runGame();
+
 	void createWindow(unsigned int nWidth, unsigned int nHeight);
 	void drawToScreen();
+
 	void projectileHandling();
+
 	sf::Texture createTexture(std::string filepath);
+
 	void mainMenu();
 	void escapeMenu(bool& loopVariable);
+	void shopMenu();
+	void guiInterface();
+
+	sf::Font* createFont(std::string filepath);
+	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int& reloadTime);
+	
 
 private:
 
@@ -31,7 +44,9 @@ private:
 	unsigned int height;
 	std::vector<GameObject*> gameObjects;
 	std::vector<Projectile*> projectiles;
-
+	std::vector<sf::Text*> guiInterfaceArray;
+	std::vector<sf::Font*> fontArray;
 	sf::RenderWindow* window;
+
 };
 
