@@ -8,8 +8,11 @@ Purpose: Weapon class that inherits from Projectile
 #include "Header.hpp"
 #include "Projectile.hpp"
 
-class Weapon {
+class Weapon 
+{
+
 public:
+
   Weapon(/*const sf::Texture& texture, weapon textures???*/
          std::string nName = "default", int nDamage = 0, double nLifeTime = 0.0, int nCooldown = 0,
          int nAmmo = -1, int nReloadTime = 1, bool nAutomatic = false);
@@ -38,6 +41,7 @@ public:
 
 
 private:
+
   std::string name;
   int damage;
   double lifeTime;
@@ -46,4 +50,5 @@ private:
   int currAmmo;
   bool automatic;
   int reloadTime;
+
 };
