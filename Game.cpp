@@ -5,7 +5,7 @@
 
 sf::Clock globalClock; // global clock
 sf::Clock timeClock;
-
+static bool secsFlag = true;
 bool flag = false;
 // based off of view of character 320 by 180 or smth like that
 
@@ -182,6 +182,7 @@ void Game::mainMenu()
 			delay = timeClock.getElapsedTime().asSeconds() + .5;
 			// sets delay so it waits before checking stuff again.
 			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) })); 
+			secsFlag = true;
 			// this fixed the view taking too long to update.
 			break;
 		case 2: // shop
@@ -207,12 +208,17 @@ void Game::mainMenu()
 } 
 void Game::guiInterface() // this code is so bad im so sorry.
 {
-	static int secs = 60;
+	static int secs;
+	if (secsFlag)
+	{
+		secs = 60;
+	}
 	std::string minutes, seconds;
 	guiInterfaceArray.resize(5, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
 	fontArray.resize(4, nullptr);
 	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
 	{
+		secsFlag = false;
 		secs += 60;
 	}
 	if (guiInterfaceArray[0] == nullptr)
