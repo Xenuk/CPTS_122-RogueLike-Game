@@ -256,7 +256,7 @@ void Game::guiInterface() // Escape Menu Start (After starting, click Esc to ent
 		secs = 60;
 	}
 	std::string minutes, seconds;
-	guiInterfaceArray.resize(5, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	guiInterfaceArray.resize(8, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
 	fontArray.resize(4, nullptr);
 
 	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
@@ -351,11 +351,11 @@ void Game::guiInterface() // Escape Menu Start (After starting, click Esc to ent
 	{
 		sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
 		sf::Text* scoreNumberGui = new sf::Text(*fontArray[0], "N/A", 16);
-		std::string score = std::to_string(gameObjects[2]->getScore());
+		std::string scoreString = std::to_string(gameObjects[2]->getScore());
 		scoreGui->setString("SCORE: ");
 		scoreGui->setScale({ 0.3,0.3 });
 		scoreGui->setPosition({ gameObjects[2]->getPosition().x - 130, gameObjects[2]->getPosition().y - 80 });
-		scoreNumberGui->setString(score);
+		scoreNumberGui->setString(scoreString);
 		scoreNumberGui->setScale({ 0.3,0.3 });
 		scoreNumberGui->setPosition({ gameObjects[2]->getPosition().x - 100, gameObjects[2]->getPosition().y - 80 });
 		guiInterfaceArray[3] = scoreGui;
@@ -364,8 +364,8 @@ void Game::guiInterface() // Escape Menu Start (After starting, click Esc to ent
 
 	else if (guiInterfaceArray[3] != nullptr)
 	{
-		std::string score = std::to_string(gameObjects[2]->getScore());
-		guiInterfaceArray[4]->setString(score);
+		std::string scoreString = std::to_string(gameObjects[2]->getScore());
+		guiInterfaceArray[4]->setString(scoreString);
 		guiInterfaceArray[3]->setPosition({gameObjects[2]->getPosition().x - 150, gameObjects[2]->getPosition().y - 80});
 		guiInterfaceArray[4]->setPosition({ gameObjects[2]->getPosition().x - 120, gameObjects[2]->getPosition().y - 80 });
 	}
@@ -627,6 +627,7 @@ void Game::runGame() // Main Game Loop
 				if (obj == player) {
 					if (obj->getCurrHealth() <= 0) 
 					{
+						score += gameObjects[2]->getScore();
 						gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
 						delete obj;
 						gameState = false;
@@ -700,7 +701,10 @@ void Game::runGame() // Main Game Loop
 		delete projectiles[i];
 		projectiles.erase(projectiles.begin() + i);
 	}
-	
+	if (gameObjects[2] != nullptr)
+	{
+		score += gameObjects[2]->getScore();
+	}
 }
 
 	
@@ -820,7 +824,8 @@ sf::Font *Game::createFont(std::string filepath)
 }
 void Game::shopMenu() // Shop Menu Start 
 {
-
+	guiInterfaceArray.resize(8, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	fontArray.resize(4, nullptr);
 	//FILE* Save = fopen("Save.csv", "w");
 	std::ofstream ofile("Save.csv"); // Save-to-file
 	std::ifstream ifile("Save.csv"); // load from file
@@ -920,6 +925,32 @@ void Game::shopMenu() // Shop Menu Start
 
 	while (window->isOpen() && !exit) // Shop menu loop
 	{
+		if (fontArray[0] == nullptr)
+		{
+			fontArray[0] = createFont("Fonts/Pixeled.ttf");
+		}
+		if (guiInterfaceArray[5] == nullptr)
+		{
+			sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
+			sf::Text* scoreNumberGui = new sf::Text(*fontArray[0], "N/A", 16);
+			std::string scoreString = std::to_string(score);
+			scoreGui->setString("SCORE: ");
+			scoreGui->setScale({ 3,3 });
+			scoreGui->setPosition({ 100, 400 });
+			scoreNumberGui->setString(scoreString);
+			scoreNumberGui->setScale({ 3,3 });
+			scoreNumberGui->setPosition({ 100, 500 });
+			guiInterfaceArray[5] = scoreGui;
+			guiInterfaceArray[6] = scoreNumberGui;
+		}
+
+		else if (guiInterfaceArray[5] != nullptr)
+		{
+			std::string scoreString = std::to_string(score);
+			guiInterfaceArray[6]->setString(scoreString);
+			guiInterfaceArray[5]->setPosition({ 100, 100 });
+			guiInterfaceArray[6]->setPosition({ 200, 200 });
+		}
 		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 		while (timeClock.getElapsedTime().asSeconds() < delay); // so that inputs dont overlap.
 		// essentially if you click exit on pause menu it would exit the whole game due to the input being held down.
@@ -983,6 +1014,9 @@ void Game::shopMenu() // Shop Menu Start
 		switch (input) // These are all multipliers that are additive and will be saved to file, each gun effected dif
 		{
 		case 1: // add dmg
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			std::cout << "Entered Add Damage" << endl;
 			if (score >= 50 + (dmgLevel * 2))
 			{
@@ -993,6 +1027,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 2: // sub dmg
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			std::cout << "Entered Sub Damage" << endl;
 			if (dmgLevel >= 1)
 			{
@@ -1002,6 +1039,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 3: // add hlth
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			if (score >= 50 + (spdLevel * 2))
 			{
 				save.addHlth(1);
@@ -1010,6 +1050,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 4: // sub hlth
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			if (hlthLevel >= 1)
 			{
 				save.subHlth(1);
@@ -1018,6 +1061,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 5: // add sped
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			if (score >= 50 + (spdLevel * 2))
 			{
 				save.addSpd(1);
@@ -1026,6 +1072,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 6: // sub sped
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			if (spdLevel >= 1)
 			{
 				save.subSpd(1);
@@ -1034,6 +1083,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 7: // add proj sped
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			if (score >= 50 + (projLevel * 2)) // check to make sure they have enough score to buy it
 			{
 				save.addProj(1);
@@ -1042,6 +1094,9 @@ void Game::shopMenu() // Shop Menu Start
 			break;
 
 		case 8: // sub proj sped
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			if (projLevel >= 1) // As long as they have a level to take back
 			{
 				save.subProj(1);
@@ -1079,6 +1134,8 @@ void Game::shopMenu() // Shop Menu Start
 		window->draw(addButtonP);
 		window->draw(subButtonP);
 		window->draw(contButton);
+		window->draw(*guiInterfaceArray[5]);
+		window->draw(*guiInterfaceArray[6]);
 		window->display();
 
 	}
