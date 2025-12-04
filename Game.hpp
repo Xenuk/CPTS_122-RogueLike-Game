@@ -15,20 +15,28 @@ class Game
 {
 
 public:
+
 	void introMenu();
 	Game();
 	~Game();
+
 	void runGame();
+
 	void createWindow(unsigned int nWidth, unsigned int nHeight);
 	void drawToScreen();
+
 	void projectileHandling();
+
 	sf::Texture createTexture(std::string filepath);
+
 	void mainMenu();
 	void escapeMenu(bool& loopVariable);
+	void shopMenu();
 	void guiInterface();
+
 	sf::Font* createFont(std::string filepath);
 	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int& reloadTime);
-	void shopMenu();
+	
 
 private:
 
@@ -39,5 +47,6 @@ private:
 	std::vector<sf::Text*> guiInterfaceArray;
 	std::vector<sf::Font*> fontArray;
 	sf::RenderWindow* window;
+
 };
 
