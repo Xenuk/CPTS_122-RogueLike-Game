@@ -46,7 +46,8 @@ public:
 	Projectile* shootProjectile(sf::RenderWindow* window, const sf::Texture& texture, float projectileSpeed,
 		int nDamage, double nLifeTime);
 
-	virtual void characterMoveControls(std::vector<GameObject*> gameObjectArray);
+	virtual void characterMoveControls();
+	virtual void enemyMoveControls(float playerX,float playerY);
 	int projectileCooldown;
 
 private:

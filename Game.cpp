@@ -502,12 +502,8 @@ void Game::runGame() // Main Game Loop
 
 		accumulator += frameTime;
 
-		if (accumulator >= dt)
-		{
-			newGameguy->characterMoveControls(gameObjects);
-
-			GameObject* player = newGameguy;
-			int gameObjectsIndex = 0;
+		newGameguy->characterMoveControls();
+		newEnemyGuy->enemyMoveControls(newGameguy->getPosition().x, newGameguy->getPosition().y);
 
 
 
