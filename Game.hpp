@@ -26,7 +26,8 @@ public:
 	void escapeMenu(bool& loopVariable);
 	void guiInterface();
 	sf::Font* createFont(std::string filepath);
-	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int &reloadTime);
+	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper);
+	void shopMenu();
 
 private:
 
