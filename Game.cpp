@@ -548,7 +548,23 @@ void Game::runGame() // Main Game Loop
 					// move enemy if within range
 					if (distance <= aggroDistance + 2500) { // added 2500 to create a essentially infinite agroDistance because changing the value is dangerous.
 						float enemySpeed = obj->getMoveSpeed();
-						obj->move(normalizedDirection * enemySpeed);
+            bool collisionFlag = false;
+            for (auto* collisionObj : gameObjects) {
+              if (collisionObj == obj) continue;
+              if (obj->getGlobalBounds().contains(collisionObj->getPosition())){
+                collisionFlag = true;
+                break;
+              }
+            }
+						if (!collisionFlag) {
+							obj->move(normalizedDirection * enemySpeed);
+						} else {
+							std::uniform_real_distribution<float> altDir(0.0f,
+								2.0f * 3.14159265358979323846f);
+							float altDirAngle = altDir(rng);
+							sf::Vector2f randDir = { std::cos(altDirAngle), std::sin(altDirAngle) };
+							obj->move(randDir * enemySpeed);
+						}
 					}
 					// if enemy touches player do damage
 					if (obj->getGlobalBounds().contains(player->getPosition()) && player->getCurrHealth() > 0) {
