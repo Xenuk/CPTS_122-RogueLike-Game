@@ -19,11 +19,11 @@ bool flag = false;
 // Save/Shop/Score Handling here
 
  // Internal Globals to hold info while ingame
-int score;
-int dmgLevel;
-int hlthLevel;
-int spdLevel;
-int projLevel;
+int score = 0;
+int dmgLevel = 0;
+int hlthLevel = 0;
+int spdLevel = 0;
+int projLevel = 0;
 // based off of view of character 320 by 180 or smth like that
 
 //
@@ -262,7 +262,7 @@ void Game::guiInterface() // Escape Menu Start (After starting, click Esc to ent
 		secs = 60;
 	}
 	std::string minutes, seconds;
-	guiInterfaceArray.resize(8, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	guiInterfaceArray.resize(11, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
 	fontArray.resize(4, nullptr);
 
 	if (secs - static_cast<int>(timeClock.getElapsedTime().asSeconds()) <= 0)
@@ -407,12 +407,12 @@ void Game::runGame() // Main Game Loop
 	sf::Texture bottomLeftWallTexture = createTexture("Sprites/MapLeftBottom.png");
 	sf::Texture topRightWallTexture = createTexture("Sprites/MapRightTop.png");
 	sf::Texture topLeftWallTexture = createTexture("Sprites/MapLeftTop.png");
-	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, 30, true);
-	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, 90, true);
-	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, 120,true);
+	Weapon* pistol = new Weapon("pistol", 10 + dmgLevel, 30 + projLevel, 30, 20, 30, true);
+	Weapon* rifle = new Weapon("rifle", 20 + (dmgLevel / 5), 40 + (projLevel / 3), 10, 40, 90, true);
+	Weapon* sniper = new Weapon("sniper", 30 + (dmgLevel * 5), 60 + (projLevel * 2), 60, 5, 120, true);
 
 
-	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol, 0);
+	GameObject* newGameguy = new GameObject(texture, 100 + hlthLevel, 100 + hlthLevel, dmgLevel, projLevel, 1 + (spdLevel / 25.0f), pistol, 0);
 	GameObject* newWallGuy = new GameObject(map, 10, 10, 10, 0, 0, pistol, 0); // TODO: make walls not have weapons
 	GameObject* newEnemyGuy = new GameObject(texture4, 100, 100, 1, 0, 0.5, pistol, 10);
 	GameObject* rightWall = new GameObject(rightWallTexture, 10, 10, 0, 0, 0, pistol, 0);
@@ -633,7 +633,8 @@ void Game::runGame() // Main Game Loop
 				if (obj == player) {
 					if (obj->getCurrHealth() <= 0) 
 					{
-						score += gameObjects[2]->getScore();
+						save.addScore(gameObjects[2]->getScore());
+						score = save.getScore();
 						gameObjects.erase(gameObjects.begin() + gameObjectsIndex);
 						delete obj;
 						gameState = false;
@@ -709,7 +710,8 @@ void Game::runGame() // Main Game Loop
 	}
 	if (gameObjects[2] != nullptr)
 	{
-		score += gameObjects[2]->getScore();
+		save.addScore(gameObjects[2]->getScore());
+		score = save.getScore();
 	}
 }
 
@@ -785,6 +787,11 @@ void Game::drawToScreen()
        i++) // draws all the text for the gui.
   {
     if (guiInterfaceArray[i] != nullptr) {
+		if (guiInterfaceArray[i] == guiInterfaceArray[5] || guiInterfaceArray[i] == guiInterfaceArray[6] || guiInterfaceArray[i] == guiInterfaceArray[7]
+		|| guiInterfaceArray[i] == guiInterfaceArray[8] || guiInterfaceArray[i] == guiInterfaceArray[9] || guiInterfaceArray[i] == guiInterfaceArray[10])
+		{
+			continue;
+		}
       // std::cout << "drawing gui interface" << endl;
       window->draw(*guiInterfaceArray[i]);
     }
@@ -831,7 +838,7 @@ sf::Font *Game::createFont(std::string filepath)
 }
 void Game::shopMenu() // Shop Menu Start 
 {
-	guiInterfaceArray.resize(8, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
+	guiInterfaceArray.resize(11, nullptr); // cant access a array 0 if it wasnt initalized so create the size then reassign the index.
 	fontArray.resize(4, nullptr);
 	//FILE* Save = fopen("Save.csv", "w");
 	std::ofstream ofile("Save.csv"); // Save-to-file
@@ -950,13 +957,80 @@ void Game::shopMenu() // Shop Menu Start
 			guiInterfaceArray[5] = scoreGui;
 			guiInterfaceArray[6] = scoreNumberGui;
 		}
-
 		else if (guiInterfaceArray[5] != nullptr)
 		{
 			std::string scoreString = std::to_string(score);
 			guiInterfaceArray[6]->setString(scoreString);
 			guiInterfaceArray[5]->setPosition({ 100, 100 });
 			guiInterfaceArray[6]->setPosition({ 200, 200 });
+		}
+		if (guiInterfaceArray[7] == nullptr)
+		{
+			sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
+			std::string healthString = std::to_string(hlthLevel);
+			scoreGui->setString("SCORE: ");
+			scoreGui->setScale({ 3,3 });
+			scoreGui->setPosition({ 100, 400 });
+			guiInterfaceArray[7] = scoreGui;
+			
+		}
+		else if (guiInterfaceArray[7] != nullptr)
+		{
+			std::string healthString = std::to_string(hlthLevel);
+			guiInterfaceArray[7]->setString(healthString);
+			guiInterfaceArray[7]->setPosition({ 1300,400 });
+			
+		}
+		if (guiInterfaceArray[8] == nullptr)
+		{
+			sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
+			std::string damageString = std::to_string(dmgLevel);
+			scoreGui->setString("SCORE: ");
+			scoreGui->setScale({ 3,3 });
+			scoreGui->setPosition({ 100, 400 });
+			guiInterfaceArray[8] = scoreGui;
+
+		}
+		else if (guiInterfaceArray[8] != nullptr)
+		{
+			std::string damageString = std::to_string(dmgLevel);
+			guiInterfaceArray[8]->setString(damageString);
+			guiInterfaceArray[8]->setPosition({ 1300, 500 });
+
+		}
+		if (guiInterfaceArray[9] == nullptr)
+		{
+			sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
+			std::string speedString = std::to_string(spdLevel);
+			scoreGui->setString("SCORE: ");
+			scoreGui->setScale({ 3,3 });
+			scoreGui->setPosition({ 100, 400 });
+			guiInterfaceArray[9] = scoreGui;
+
+		}
+		else if (guiInterfaceArray[9] != nullptr)
+		{
+			std::string speedString = std::to_string(spdLevel);
+			guiInterfaceArray[9]->setString(speedString);
+			guiInterfaceArray[9]->setPosition({ 1300, 600 });
+
+		}
+		if (guiInterfaceArray[10] == nullptr)
+		{
+			sf::Text* scoreGui = new sf::Text(*fontArray[0], "N/A", 16);
+			std::string projString = std::to_string(projLevel);
+			scoreGui->setString("SCORE: ");
+			scoreGui->setScale({ 3,3 });
+			scoreGui->setPosition({ 100, 400 });
+			guiInterfaceArray[10] = scoreGui;
+
+		}
+		else if (guiInterfaceArray[10] != nullptr)
+		{
+			std::string projString = std::to_string(projLevel);
+			guiInterfaceArray[10]->setString(projString);
+			guiInterfaceArray[10]->setPosition({ 1300, 700 });
+
 		}
 		window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 		while (timeClock.getElapsedTime().asSeconds() < delay); // so that inputs dont overlap.
@@ -1030,6 +1104,8 @@ void Game::shopMenu() // Shop Menu Start
 				std::cout << "Bought Damage Level: Current Score Global, Damage Level, Estimated Price: " << score << ", " << dmgLevel << ", " << 50 + (dmgLevel * 2) << std::endl; // info check
 				save.addDmg(1);
 				save.subScore(50 + (dmgLevel * 2));
+				dmgLevel = save.getDmg();
+				score = save.getScore();
 			}
 			break;
 
@@ -1042,6 +1118,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.subDmg(1);
 				save.addScore(50 + (dmgLevel * 2));
+				dmgLevel = save.getDmg();
+				score = save.getScore();
 			}
 			break;
 
@@ -1053,6 +1131,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.addHlth(1);
 				save.subScore(50 + (hlthLevel * 2));
+				hlthLevel = save.getHlth();
+				score = save.getScore();
 			}
 			break;
 
@@ -1064,6 +1144,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.subHlth(1);
 				save.addScore(50 + (hlthLevel * 2));
+				hlthLevel = save.getHlth();
+				score = save.getScore();
 			}
 			break;
 
@@ -1075,6 +1157,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.addSpd(1);
 				save.subScore(50 + (spdLevel * 2));
+				spdLevel = save.getSpd();
+				score = save.getScore();
 			}
 			break;
 
@@ -1086,6 +1170,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.subSpd(1);
 				save.addScore(50 + (spdLevel * 2));
+				spdLevel = save.getSpd();
+				score = save.getScore();
 			}
 			break;
 
@@ -1097,6 +1183,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.addProj(1);
 				save.subScore(50 + (projLevel * 2));
+				projLevel = save.getProj();
+				score = save.getScore();
 			}
 			break;
 
@@ -1108,6 +1196,8 @@ void Game::shopMenu() // Shop Menu Start
 			{
 				save.subProj(1);
 				save.addScore(50 + (projLevel * 2));
+				projLevel = save.getProj();
+				score = save.getScore();
 			}
 			break;
 
@@ -1143,6 +1233,10 @@ void Game::shopMenu() // Shop Menu Start
 		window->draw(contButton);
 		window->draw(*guiInterfaceArray[5]);
 		window->draw(*guiInterfaceArray[6]);
+		window->draw(*guiInterfaceArray[7]);
+		window->draw(*guiInterfaceArray[8]);
+		window->draw(*guiInterfaceArray[9]);
+		window->draw(*guiInterfaceArray[10]);
 		window->display();
 
 	}

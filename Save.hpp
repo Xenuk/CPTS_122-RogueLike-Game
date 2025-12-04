@@ -22,7 +22,12 @@ public:
     int getHlth()  const { return hlthLevel; }
     int getSpd()   const { return spdLevel; }
     int getProj()  const { return projLevel; }
-
+    // Setters
+    void setScore(int newScore) { score = newScore; }
+    void setDmg(int newDmg) { dmgLevel = newDmg; }
+    void setHlth(int newHealth) { hlthLevel = newHealth; }
+    void setSpd(int newSpd) { spdLevel = newSpd; }
+    void setProj(int newProj) { projLevel = newProj; }
     // Modifiers
     void addScore(int v) { score += v; }
     void addDmg(int v) { dmgLevel += v; }
@@ -36,7 +41,7 @@ public:
     void subSpd(int v) { spdLevel -= v; }
     void subProj(int v) { projLevel -= v; }
 
-
+    
 private:
     int score;
     int dmgLevel;
