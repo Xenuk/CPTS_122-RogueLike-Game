@@ -411,7 +411,7 @@ void Game::runGame() // Main Game Loop
 	std::cout << "Game Running Start Time: " << globalClock.getElapsedTime().asSeconds() << "s" << std::endl;
 
 	int projectileTime = 0; // used for cooldown
-  int reloadTime = 0;
+	int reloadTime = 0;
 	int touchDamageTime = 0;
 	int enemyProjectileTime = 0; // used for cooldown
 	sf::Texture map = createTexture("Sprites/SpriteMap.png");
@@ -421,9 +421,9 @@ void Game::runGame() // Main Game Loop
 	sf::Texture texture3 = createTexture("Sprites/ExampleBullet.png");
 	sf::Texture texture4 = createTexture("Sprites/ExampleEnemy.png");
 
-	Weapon* pistol = new Weapon("pistol", 10, 30, 30, 20, 5, true);
-	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, 20, true);
-	Weapon* sniper = new Weapon("sniper", 30, 60, 60, 5, 30, true);
+	Weapon* pistol = new Weapon("pistol", 30, 30, 30, 20, 30, true);
+	Weapon* rifle = new Weapon("rifle", 20, 40, 10, 40, 90, true);
+	Weapon* sniper = new Weapon("sniper", 60, 60, 60, 5, 120, true);
 
 
 	GameObject* newGameguy = new GameObject(texture, 100, 100, 10, 20, 1, pistol, 0);
@@ -670,7 +670,7 @@ void Game::runGame() // Main Game Loop
 
 
 			guiInterface();
-			weaponControls(pistol, rifle, sniper);
+			weaponControls(pistol, rifle, sniper, reloadTime);
 			projectileTime++; // for cooldown system, rework later.
       reloadTime++;
 			enemyProjectileTime++;
@@ -691,7 +691,7 @@ void Game::runGame() // Main Game Loop
 
 	
 
-void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper)
+void Game::weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int &reloadTime)
 {
 	// Reloading
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
