@@ -12,7 +12,7 @@ class Weapon {
 public:
   Weapon(/*const sf::Texture& texture, weapon textures???*/
          std::string nName = "default", int nDamage = 0, double nLifeTime = 0.0, int nCooldown = 0,
-         int nAmmo = -1, bool nAutomatic = false);
+         int nAmmo = -1, int nReloadTime = 1, bool nAutomatic = false);
   ~Weapon();
 
   std::string getName() const;
@@ -21,6 +21,7 @@ public:
   double getLifeTime() const;
   int getAmmo() const;
   int getCurrAmmo() const;
+  int getReloadTime() const;
   bool isAutomatic() const;
 
   void setName(std::string nName);
@@ -29,6 +30,7 @@ public:
   void setAmmo(int nAmmo);
   void setCurrAmmo(int nCurrAmmo);
   void setCooldown(int nCooldown);
+  void setReloadTime(int nReloadTime);
   void setAutomatic(bool nAutomatic);
 
   void deincrementCurrAmmo();
@@ -43,4 +45,5 @@ private:
   int ammo; // -1 for infinite
   int currAmmo;
   bool automatic;
+  int reloadTime;
 };
