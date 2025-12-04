@@ -14,3 +14,15 @@ A simple rougelike game where you play as a kitty cat and kill enemies
 before they can touch you
 
 ## Instructions
+WASD for movement
+
+Left Mouse to shoot
+
+R to Reload
+
+Switch weapons with:
+1: Pistol
+
+2: Rifle
+
+3: Sniper
