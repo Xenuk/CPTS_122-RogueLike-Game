@@ -9,13 +9,13 @@ Purpose: The main file that starts the program.
 #include "Game.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp" 
-
+#include "tests.hpp"
 
 int main()
 {
-	
-	Game game = Game();
-	game.mainMenu();
+	Tests::runAllTests();
+	// Game game = Game();
+	// game.mainMenu();
 
 	return 0;
 }
