@@ -64,6 +64,35 @@ void Game::escapeMenu(bool& loopVariable)
 			}
 
 
+		}
+		switch (input)
+		{
+		case 1: // resume
+			loop = false;
+
+			break;
+		case 2: // settings
+
+			break;
+		case 3: // exit
+			loop = false;
+			loopVariable = false;
+			for (int i = 0; i > gameObjects.size(); i++)
+			{
+				delete gameObjects[i];
+
+			}
+			break;
+		}
+		window->draw(playButton);
+		window->draw(settingsButton);
+		window->draw(exitButton);
+		window->display();
+
+	}
+	timeClock.start();
+}
+
 
 
 //
@@ -166,6 +195,9 @@ void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 			break;
 		case 2: // shop
 			shopMenu();
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			break;
 		case 3: // settings
 
@@ -187,7 +219,7 @@ void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 	}
 }  // Main Menu End
 
-void Game::escapeMenu(bool& loopVariable) // Escape Menu Start (After starting, click Esc to enter)
+void Game::guiInterface() // Escape Menu Start (After starting, click Esc to enter)
 {
 	static int secs;
 	if (secsFlag)
@@ -962,3 +994,59 @@ void Game::shopMenu() // Shop Menu Start
 
 	}
 }  // Shop Menu End
+void Game::introMenu()
+{
+	//timeClock.stop();
+	sf::Texture instructionTexture = createTexture("Sprites/instructionsMenu.png");
+	sf::Sprite instructions(instructionTexture);
+	instructions.setOrigin({ 960,540 });
+	instructions.setPosition({ 959,539 });
+	instructions.setScale({ 1,1 });
+
+	sf::Texture exitButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ 960,950 });
+	exitButton.setScale({ 3,3 });
+	bool loop = true;
+	int input = 0;
+
+	while (window->isOpen() && loop)
+	{
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+			}
+
+
+		}
+		switch (input)
+		{
+		case 1: // start
+			loop = false;
+
+			break;
+		}
+		window->clear(sf::Color::Black);
+		window->draw(instructions);
+		window->draw(exitButton);
+		window->display();
+
+	}
+	//timeClock.start();
+}
