@@ -29,3 +29,5 @@ Adding will subtract from your Score to add Levels. You need a minimum Score to 
 This minimum is equivalent to (50 * (LevelYouAreIncreasing*2)).
 Upon clicking Continue, you confirm your choices and go back to the Main Menu.
 Upon exiting the Game, your score and levels are saved to Save.csv.
+
+Thank you for Playing!
