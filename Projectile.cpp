@@ -1,7 +1,7 @@
 /*
 File Name: Projectile.cpp
 Created: 11/20/2025
-Purpose: Fill In
+Purpose: Projectile content file, definitions.
 */
 
 #include "Header.hpp"
