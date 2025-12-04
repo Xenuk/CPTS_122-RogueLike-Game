@@ -146,6 +146,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Save.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="header.hpp" />
     <ClInclude Include="Projectile.hpp" />
+    <ClInclude Include="Save.hpp" />
     <ClInclude Include="Weapon.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

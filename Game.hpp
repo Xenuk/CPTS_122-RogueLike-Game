@@ -9,7 +9,7 @@ Purpose: This is the Game Header File, it contains the Game Class, and carries t
 #include "Header.hpp"
 #include "GameObject.hpp"
 #include "Projectile.hpp"
-
+#include "Save.hpp"
 class Game
 {
 
@@ -26,7 +26,7 @@ public:
 	void escapeMenu(bool& loopVariable);
 	void guiInterface();
 	sf::Font* createFont(std::string filepath);
-	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper);
+	void weaponControls(Weapon* pistol, Weapon* rifle, Weapon* sniper, int& reloadTime);
 	void shopMenu();
 
 private:

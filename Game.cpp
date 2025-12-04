@@ -2,10 +2,22 @@
 #include <random>
 #include <ctime>
 #include <cmath>
-
 sf::Clock globalClock; // global clock
 sf::Clock timeClock;
 static bool secsFlag = true;
+Save save; // Save load
+
+bool flag = false;
+// based off of view of character 320 by 180 or smth like that
+
+// Save/Shop/Score Handling here
+
+ // Internal Globals to hold info while ingame
+int score;
+int dmgLevel;
+int hlthLevel;
+int spdLevel;
+int projLevel;
 // based off of view of character 320 by 180 or smth like that
 
 //
@@ -63,14 +75,53 @@ void Game::escapeMenu(bool& loopVariable)
 			}
 
 
+		}
+		switch (input)
+		{
+		case 1: // resume
+			loop = false;
+
+			break;
+		case 2: // settings
+
+			break;
+		case 3: // exit
+			loop = false;
+			loopVariable = false;
+			for (int i = 0; i > gameObjects.size(); i++)
+			{
+				delete gameObjects[i];
+
+			}
+			break;
+		}
+		window->draw(playButton);
+		window->draw(settingsButton);
+		window->draw(exitButton);
+		window->display();
+
+	}
+	timeClock.start();
+}
+
 
 
 //
 
 // based on 1920 by 1080
+// based on 1920 by 1080
 void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 {
 	createWindow(320, 180); // creates 1920x1080 window with a view that is 320 by 180.
+
+	std::ofstream ofile("Save.csv"); // Save-to-file
+	std::ifstream ifile("Save.csv"); // load from file
+
+	score = save.getScore();
+	dmgLevel = save.getDmg();
+	hlthLevel = save.getHlth();
+	spdLevel = save.getSpd();
+	projLevel = save.getProj();
 
 	sf::Time elapsed1 = globalClock.getElapsedTime();
 	std::cout << "Main Menu Opened At: " << elapsed1.asSeconds() << "s" << std::endl; // Functional Running Time Clock
@@ -127,7 +178,7 @@ void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 			}
 
 		}
-		
+
 		if (window->hasFocus()) // Get bounds for selecting options
 		{
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
@@ -159,17 +210,28 @@ void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 			runGame();
 			delay = timeClock.getElapsedTime().asSeconds() + .5;
 			// sets delay so it waits before checking stuff again.
-			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) })); 
-			secsFlag = true;
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			// this fixed the view taking too long to update.
 			break;
 		case 2: // shop
 			shopMenu();
+			delay = timeClock.getElapsedTime().asSeconds() + .5;
+			// sets delay so it waits before checking stuff again.
+			window->setView(sf::View({ 960,540 }, { static_cast<float>(1920),static_cast<float>(1080) }));
 			break;
 		case 3: // settings
 
 			break;
 		case 4: // exit
+
+			save.addScore(score - save.getScore());
+			save.addDmg(dmgLevel - save.getDmg());
+			save.addHlth(hlthLevel - save.getHlth());
+			save.addSpd(spdLevel - save.getSpd());
+			save.addProj(projLevel - save.getProj());
+
+			save.save(); // I think this will save your stats before you leave(?) System is somewhat open
+
 			exit = true;
 			break;
 		}
@@ -182,11 +244,11 @@ void Game::mainMenu() // Main Menu Start (First Thing the Player Sees)
 		window->draw(exitButton);
 		window->draw(settingsButton);
 		window->display();
-		
+
 	}
 }  // Main Menu End
 
-void Game::escapeMenu(bool& loopVariable) // Escape Menu Start (After starting, click Esc to enter)
+void Game::guiInterface() // Escape Menu Start (After starting, click Esc to enter)
 {
 	static int secs;
 	if (secsFlag)
@@ -759,6 +821,11 @@ sf::Font *Game::createFont(std::string filepath)
 void Game::shopMenu() // Shop Menu Start 
 {
 
+	//FILE* Save = fopen("Save.csv", "w");
+	std::ofstream ofile("Save.csv"); // Save-to-file
+	std::ifstream ifile("Save.csv"); // load from file
+
+
 	sf::Time elapsed1 = globalClock.getElapsedTime();
 	std::cout << "Shop Menu Opened At: " << elapsed1.asSeconds() << "s" << std::endl; // Functional Running Time Clock
 	//sf::Clock globalClock.restart();
@@ -769,75 +836,81 @@ void Game::shopMenu() // Shop Menu Start
 	backGround.setPosition({ 960,540 });
 	backGround.setScale({ 6,6 });
 
+	sf::Texture shopButtonTexture = createTexture("Sprites/ShopButton.png");
+	sf::Sprite shopButton(shopButtonTexture);
+	shopButton.setOrigin({ 47,10 });
+	shopButton.setPosition({ 960,150 });
+	shopButton.setScale({ 5,5 });
+
 	sf::Texture healthButtonTexture = createTexture("Sprites/Health.png");
 	sf::Sprite healthButton(healthButtonTexture);
 	healthButton.setOrigin({ 47,10 });
-	healthButton.setPosition({ 760,300 });
+	healthButton.setPosition({ 350,400 });
 	healthButton.setScale({ 3,3 });
 	sf::Texture addButtonHTexture = createTexture("Sprites/Add.png");
 	sf::Sprite addButtonH(addButtonHTexture);
 	addButtonH.setOrigin({ 47,10 });
-	addButtonH.setPosition({ 860,300 });
+	addButtonH.setPosition({ 750,400 });
 	addButtonH.setScale({ 3,3 });
 	sf::Texture subButtonHTexture = createTexture("Sprites/Subtract.png");
 	sf::Sprite subButtonH(subButtonHTexture);
 	subButtonH.setOrigin({ 47,10 });
-	subButtonH.setPosition({ 960,300 });
+	subButtonH.setPosition({ 1150,400 });
 	subButtonH.setScale({ 3,3 });
 
 	sf::Texture damageButtonTexture = createTexture("Sprites/Damage.png");
 	sf::Sprite damageButton(damageButtonTexture);
 	damageButton.setOrigin({ 47,10 });
-	damageButton.setPosition({ 760,400 });
+	damageButton.setPosition({ 350,500 });
 	damageButton.setScale({ 3,3 });
 	sf::Texture addButtonDTexture = createTexture("Sprites/Add.png");
 	sf::Sprite addButtonD(addButtonDTexture);
 	addButtonD.setOrigin({ 47,10 });
-	addButtonD.setPosition({ 860,400 });
+	addButtonD.setPosition({ 750,500 });
 	addButtonD.setScale({ 3,3 });
 	sf::Texture subButtonDTexture = createTexture("Sprites/Subtract.png");
 	sf::Sprite subButtonD(subButtonDTexture);
 	subButtonD.setOrigin({ 47,10 });
-	subButtonD.setPosition({ 960,400 });
+	subButtonD.setPosition({ 1150,500 });
 	subButtonD.setScale({ 3,3 });
 
 	sf::Texture movementButtonTexture = createTexture("Sprites/Movement.png");
 	sf::Sprite movementButton(movementButtonTexture);
 	movementButton.setOrigin({ 47,10 });
-	movementButton.setPosition({ 760,500 });
+	movementButton.setPosition({ 350,600 });
 	movementButton.setScale({ 3,3 });
 	sf::Texture addButtonMTexture = createTexture("Sprites/Add.png");
 	sf::Sprite addButtonM(addButtonMTexture);
 	addButtonM.setOrigin({ 47,10 });
-	addButtonM.setPosition({ 860,500 });
+	addButtonM.setPosition({ 750,600 });
 	addButtonM.setScale({ 3,3 });
 	sf::Texture subButtonMTexture = createTexture("Sprites/Subtract.png");
 	sf::Sprite subButtonM(subButtonMTexture);
 	subButtonM.setOrigin({ 47,10 });
-	subButtonM.setPosition({ 960,500 });
+	subButtonM.setPosition({ 1150,600 });
 	subButtonM.setScale({ 3,3 });
 
 
 	sf::Texture projectileButtonTexture = createTexture("Sprites/Projectile.png");
 	sf::Sprite projectileButton(projectileButtonTexture);
 	projectileButton.setOrigin({ 47,10 });
-	projectileButton.setPosition({ 760,600 });
+	projectileButton.setPosition({ 350,700 });
 	projectileButton.setScale({ 3,3 });
 	sf::Texture addButtonPTexture = createTexture("Sprites/Add.png");
 	sf::Sprite addButtonP(addButtonPTexture);
 	addButtonP.setOrigin({ 47,10 });
-	addButtonP.setPosition({ 860,600 });
+	addButtonP.setPosition({ 750,700 });
 	addButtonP.setScale({ 3,3 });
 	sf::Texture subButtonPTexture = createTexture("Sprites/Subtract.png");
 	sf::Sprite subButtonP(subButtonPTexture);
 	subButtonP.setOrigin({ 47,10 });
-	subButtonP.setPosition({ 960,600 });
+	subButtonP.setPosition({ 1150,700 });
 	subButtonP.setScale({ 3,3 });
 
 	sf::Texture contButtonTexture = createTexture("Sprites/Continue.png");
 	sf::Sprite contButton(contButtonTexture);
 	contButton.setOrigin({ 47,10 });
-	contButton.setPosition({ 960,800 });
+	contButton.setPosition({ 960,900 });
 	contButton.setScale({ 4,4 });
 
 	// variables
@@ -910,37 +983,81 @@ void Game::shopMenu() // Shop Menu Start
 		switch (input) // These are all multipliers that are additive and will be saved to file, each gun effected dif
 		{
 		case 1: // add dmg
-
+			std::cout << "Entered Add Damage" << endl;
+			if (score >= 50 + (dmgLevel * 2))
+			{
+				std::cout << "Bought Damage Level: Current Score Global, Damage Level, Estimated Price: " << score << ", " << dmgLevel << ", " << 50 + (dmgLevel * 2) << std::endl; // info check
+				save.addDmg(1);
+				save.subScore(50 + (dmgLevel * 2));
+			}
 			break;
+
 		case 2: // sub dmg
-
-
+			std::cout << "Entered Sub Damage" << endl;
+			if (dmgLevel >= 1)
+			{
+				save.subDmg(1);
+				save.addScore(50 + (dmgLevel * 2));
+			}
 			break;
+
 		case 3: // add hlth
-
-
+			if (score >= 50 + (spdLevel * 2))
+			{
+				save.addHlth(1);
+				save.subScore(50 + (hlthLevel * 2));
+			}
 			break;
+
 		case 4: // sub hlth
-
-
+			if (hlthLevel >= 1)
+			{
+				save.subHlth(1);
+				save.addScore(50 + (hlthLevel * 2));
+			}
 			break;
+
 		case 5: // add sped
-
-
+			if (score >= 50 + (spdLevel * 2))
+			{
+				save.addSpd(1);
+				save.subScore(50 + (spdLevel * 2));
+			}
 			break;
+
 		case 6: // sub sped
-
-
+			if (spdLevel >= 1)
+			{
+				save.subSpd(1);
+				save.addScore(50 + (spdLevel * 2));
+			}
 			break;
+
 		case 7: // add proj sped
-
-
+			if (score >= 50 + (projLevel * 2)) // check to make sure they have enough score to buy it
+			{
+				save.addProj(1);
+				save.subScore(50 + (projLevel * 2));
+			}
 			break;
+
 		case 8: // sub proj sped
-
-
+			if (projLevel >= 1) // As long as they have a level to take back
+			{
+				save.subProj(1);
+				save.addScore(50 + (projLevel * 2));
+			}
 			break;
+
 		case 9: // exit
+			// finalize values
+
+			score = save.getScore(); // Final values before continuing
+			hlthLevel = save.getHlth();
+			dmgLevel = save.getDmg();
+			spdLevel = save.getSpd();
+			projLevel = save.getProj();
+
 			exit = true;
 			break;
 		}
@@ -948,12 +1065,17 @@ void Game::shopMenu() // Shop Menu Start
 		input = 0;
 		window->clear(sf::Color::Black);
 		window->draw(backGround); // Render buttons
+		window->draw(shopButton);
+		window->draw(damageButton);
 		window->draw(addButtonD);
 		window->draw(subButtonD);
+		window->draw(healthButton);
 		window->draw(addButtonH);
 		window->draw(subButtonH);
+		window->draw(movementButton);
 		window->draw(addButtonM);
 		window->draw(subButtonM);
+		window->draw(projectileButton);
 		window->draw(addButtonP);
 		window->draw(subButtonP);
 		window->draw(contButton);
@@ -961,3 +1083,59 @@ void Game::shopMenu() // Shop Menu Start
 
 	}
 }  // Shop Menu End
+void Game::introMenu()
+{
+	//timeClock.stop();
+	sf::Texture instructionTexture = createTexture("Sprites/instructionsMenu.png");
+	sf::Sprite instructions(instructionTexture);
+	instructions.setOrigin({ 960,540 });
+	instructions.setPosition({ 959,539 });
+	instructions.setScale({ 1,1 });
+
+	sf::Texture exitButtonTexture = createTexture("Sprites/PlayButton.png");
+	sf::Sprite exitButton(exitButtonTexture);
+	exitButton.setOrigin({ 47,10 });
+	exitButton.setPosition({ 960,950 });
+	exitButton.setScale({ 3,3 });
+	bool loop = true;
+	int input = 0;
+
+	while (window->isOpen() && loop)
+	{
+		while (const std::optional event = window->pollEvent())
+		{
+			if (event->is<sf::Event::Closed>())
+			{
+				window->close();
+			}
+
+		}
+
+		sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window)); // lotsa reused code.
+		if (window->hasFocus())
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+			{
+				if (exitButton.getGlobalBounds().contains(mousePos))
+				{
+					input = 1;
+				}
+			}
+
+
+		}
+		switch (input)
+		{
+		case 1: // start
+			loop = false;
+
+			break;
+		}
+		window->clear(sf::Color::Black);
+		window->draw(instructions);
+		window->draw(exitButton);
+		window->display();
+
+	}
+	//timeClock.start();
+}
