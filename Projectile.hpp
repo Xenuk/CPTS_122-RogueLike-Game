@@ -1,22 +1,39 @@
 /*
 File Name: Projectile.hpp
 Created: 11/20/2025
-Purpose: Fill in
+Purpose: Projjectile Header fille.
 */
 
 #pragma once
 #include "Header.hpp"
-
 
 class Projectile : public sf::Sprite 
 {
 
 public:
 
-	Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed, double nLifeTime); // nDirectionAndSpeed later will be used from mouse position calculated somehow or smth.
-	virtual ~Projectile();
-	sf::Vector2f directionAndSpeed;
-	int damage;
-	double lifeTime;
-	double currLifeTime;
+    // Projectile();
+    Projectile(const sf::Texture& texture, int nDamage, sf::Vector2f nDirectionAndSpeed,
+        double nLifeTime);
+    ~Projectile();
+
+    // Getters
+    sf::Vector2f getDirectionAndSpeed() const;
+    int getDamage() const;
+    double getLifeTime() const;
+    double getCurrLifeTime() const;
+
+    // Setters
+    void setDirectionAndSpeed(const sf::Vector2f& nDirectionAndSpeed);
+    void setDamage(int nDamage);
+    void setLifeTime(double nLifeTime);
+    void setCurrLifeTime(double nCurrLifeTime);
+
+private:
+
+    sf::Vector2f directionAndSpeed;
+    int damage;
+    double lifeTime;
+    double currLifeTime;
+
 };

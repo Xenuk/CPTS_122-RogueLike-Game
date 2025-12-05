@@ -130,6 +130,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,12 +146,18 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="Save.cpp" />
+    <ClCompile Include="tests.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.hpp" />
     <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="header.hpp" />
     <ClInclude Include="Projectile.hpp" />
+    <ClInclude Include="Save.hpp" />
+    <ClInclude Include="tests.hpp" />
+    <ClInclude Include="Weapon.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

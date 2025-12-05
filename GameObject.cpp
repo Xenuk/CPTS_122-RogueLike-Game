@@ -6,7 +6,8 @@ Purpose: The main file that starts the program.
 
 #include "GameObject.hpp"
 
-GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown, float nMoveSpeed) :
+GameObject::GameObject(const sf::Texture& texture, int nCurrHealth,int nMaxHealth,int nDamage, int nProjectileCooldown,
+	float nMoveSpeed, Weapon *nCurrWeapon, int nScore) :
 Sprite(texture)
 {
 	std::cout << "GameObject constructor called.\n" << std::endl;
@@ -20,7 +21,9 @@ Sprite(texture)
 	std::cout << "Current MoveSpeed: " << moveSpeed << std::endl;
 	projectileCooldown = nProjectileCooldown;
 	std::cout << "Current Attack Cooldown: " << projectileCooldown << std::endl;
-	
+	currWeapon = nCurrWeapon;
+	std::cout << "Current Weapon: " << currWeapon->getName() << std::endl;
+	score = nScore;
 }
 
 GameObject::~GameObject()
@@ -29,9 +32,13 @@ std::cout << "GameObject Destructor called.\n" << std::endl;
 }
 
 
+void GameObject::setCurrWeapon(Weapon *newCurrWeapon) {
+	currWeapon = newCurrWeapon;
+}
+
 int GameObject::getCurrHealth()
 {
-	std::cout << "Get Health: " << currHealth << std::endl;
+	// std::cout << "Get Health: " << currHealth << std::endl;
 	return currHealth;
 }
 void GameObject::setCurrHealth(int newCurrHealth)
@@ -66,7 +73,7 @@ void GameObject::setDamage(int newDamage)
 
 float GameObject::getMoveSpeed()
 {
-	std::cout << "Get Movement Speed: " << moveSpeed << std::endl;
+	// std::cout << "Get Movement Speed: " << moveSpeed << std::endl;
 	return moveSpeed;
 }
 void GameObject::setMoveSpeed(float newMoveSpeed)
@@ -93,8 +100,15 @@ void GameObject::setSprite(std::string textureFilePath)
 	// std::cout << "Sprite Set To: " << texture << std::endl;
 }
 
-Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed, int nDamage, double nLifeTime)
+
+void GameObject::deincrementHealth(int damageTaken) {
+  currHealth = currHealth - damageTaken;
+}
+
+Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Texture& texture,float projectileSpeed,
+	int nDamage, double nLifeTime)
 {
+	
 	sf::Vector2f pos = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 	float angle = atan2(pos.y - getPosition().y, pos.x - getPosition().x);
 	
@@ -108,7 +122,7 @@ Projectile* GameObject::shootProjectile(sf::RenderWindow* window,const sf::Textu
 	return lol;
 }
 
-void GameObject::characterMoveControls()
+void GameObject::characterMoveControls(std::vector<GameObject*> gameObjectArray)
 {
 	static bool spriteInitalized = false;
 	static sf::IntRect dir[4]; // static mean its only intialized first call and is local scope but its storage is global.
@@ -128,19 +142,48 @@ void GameObject::characterMoveControls()
 	float movementVerticle = 0, movementHorizontal = 0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Down))
 	{
-		movementVerticle = movementVerticle + moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[5]->getGlobalBounds()))
+		{
+			
+		}
+		else
+		{
+			movementVerticle = movementVerticle + moveSpeed;
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A) ||  sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Left))
 	{
-		movementHorizontal = movementHorizontal - moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[4]->getGlobalBounds()))
+		{
+
+		}
+		else
+		{
+			movementHorizontal = movementHorizontal - moveSpeed;
+		}
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Right))
 	{
-		movementHorizontal = movementHorizontal + moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[3]->getGlobalBounds()))
+		{
+
+		}
+		else
+		{
+			movementHorizontal = movementHorizontal + moveSpeed;
+		}
+		
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::Up))
 	{
-		movementVerticle = movementVerticle - moveSpeed;
+		if (this->getGlobalBounds().findIntersection(gameObjectArray[1]->getGlobalBounds()))
+		{
+
+		}
+		else
+		{
+			movementVerticle = movementVerticle - moveSpeed;
+		}
 	}
 	if (movementVerticle != 0 && movementHorizontal != 0) {
 		//0.707106781187 ~ ((1+1)^(1/2))/2

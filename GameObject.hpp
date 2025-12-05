@@ -7,16 +7,20 @@ Purpose: The main file that starts the program.
 #pragma once
 #include "Header.hpp"
 #include "Projectile.hpp"
+#include "Weapon.hpp"
 
 class GameObject : public sf::Sprite
 {
 
 public:
 
-	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, int nProjectileCooldown, float nMoveSpeed);
+	GameObject(const sf::Texture& texture, int nCurrHealth, int nMaxHealth, int nDamage, int nProjectileCooldown,
+		float nMoveSpeed, Weapon *nCurrWeapon, int nScore);
 	~GameObject();
 	int getCurrHealth();
 	void setCurrHealth(int newCurrHealth);
+
+	void setCurrWeapon(Weapon *newCurrWeapon);
 
 	int getMaxHealth();
 	void setMaxHealth(int newMaxHealth);
@@ -27,10 +31,20 @@ public:
 	float getMoveSpeed();
 	void setMoveSpeed(float newMoveSpeed);
 
+	int getScore();
+	void setScore(int newScore);
+
+	//std::string getCurrWeapon(){return currWeapon;}
+
+	Weapon *getCurrWeapon(){return currWeapon;}
+
+   void deincrementHealth(int damageTaken);
+
 	sf::Sprite* getSprite();
 	virtual void setSprite(std::string textureFilePath);
 
-	Projectile* shootProjectile(sf::RenderWindow* window, const sf::Texture& texture, float projectileSpeed, int nDamage, double nLifeTime);
+	Projectile* shootProjectile(sf::RenderWindow* window, const sf::Texture& texture, float projectileSpeed,
+		int nDamage, double nLifeTime);
 
 	virtual void characterMoveControls();
 	virtual void enemyMoveControls(float playerX,float playerY);
@@ -43,5 +57,6 @@ private:
 	int maxHealth;
 	int damage;
 	float moveSpeed;
-
+	Weapon *currWeapon;
+	int score;
 };
